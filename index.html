@@ -127,7 +127,7 @@
 
   <div class="container">
     <h1>Treasury Analytics</h1>
-    <p class="sub">Sui KPIs with live pricing.</p>
+    <p class="sub">Sui KPIs in USD with live pricing.</p>
 
     <!-- === CORE METRICS === -->
     <div class="grid" style="margin-bottom:48px">
@@ -136,11 +136,11 @@
         <div class="value" id="sui-holdings">—</div>
       </div>
       <div class="kpi">
-        <div class="title">SUI Price (GBP)</div>
+        <div class="title">SUI Price (USD)</div>
         <div class="value" id="sui-price">—</div>
       </div>
       <div class="kpi">
-        <div class="title">Total Value (£)</div>
+        <div class="title">Total Value ($)</div>
         <div class="value" id="sui-value">—</div>
       </div>
     </div>
@@ -155,11 +155,11 @@
 
       <!-- Strategy-style Gain YTD -->
       <div class="kpi">
-        <div class="title" title="(Holdings at start of year) × (Yield YTD) × (Current Price)">SUI £ Gain YTD</div>
-        <div class="value" id="sui-gain-ytd-gbp">—</div>
+        <div class="title" title="(Holdings at start of year) × (Yield YTD) × (Current Price)">SUI $ Gain YTD</div>
+        <div class="value" id="sui-gain-ytd-usd">—</div>
       </div>
 
-      <!-- Your existing token/£ KPIs (unchanged logic) -->
+      <!-- Optional token KPIs -->
       <div class="kpi">
         <div class="title">SUI Gain QTD (tokens)</div>
         <div class="value" id="sui-gain-qtd">—</div>
@@ -174,12 +174,12 @@
       </div>
 
       <div class="kpi">
-        <div class="title">SUI £ Gain QTD</div>
-        <div class="value" id="sui-gain-qtd-gbp">—</div>
+        <div class="title">SUI $ Gain QTD</div>
+        <div class="value" id="sui-gain-qtd-usd">—</div>
       </div>
       <div class="kpi">
-        <div class="title">SUI £ Gain 2025</div>
-        <div class="value" id="sui-gain-2024-gbp">—</div>
+        <div class="title">SUI $ Gain 2025</div>
+        <div class="value" id="sui-gain-2024-usd">—</div>
       </div>
     </div>
 
@@ -198,18 +198,18 @@
   <script>
   (function(){
     const CFG = {
-      locale: "en-GB",
+      locale: "en-US",
       pricePollEveryMs: 60000, // refresh every minute
 
       // === ENTER YOUR NUMBERS HERE ===
       suiHoldings: 5642,        // total tokens you hold now
-      suiHoldingsStart: 0,   // tokens held at start of the year (Jan 1)
-      priceJan1: 4.28,          // SUI GBP price on Jan 1 of the current year
+      suiHoldingsStart: 5000,   // tokens held at start of the year (Jan 1)
+      priceJan1: 2.60,          // SUI USD price on Jan 1 of the current year
 
-      // Optional token-based KPIs you already use
-      suiGainQTD: 5000,            // net tokens added this quarter
-      suiGainYTD: 5642,          // net tokens added since Jan 1
-      suiGain2024: 2000         // example full-year tokens (rename as needed)
+      // Optional token-based KPIs
+      suiGainQTD: 0,
+      suiGainYTD: 642,
+      suiGain2024: 5642
     };
 
     const nfInt = new Intl.NumberFormat(CFG.locale,{maximumFractionDigits:0});
@@ -223,19 +223,19 @@
       // core
       set("sui-holdings", nfInt.format(CFG.suiHoldings));
       if(suiPriceUSD){
-        set("sui-price","£"+nf2.format(suiPriceUSD));
-        set("sui-value","£"+nf2.format(CFG.suiHoldings*suiPriceUSD));
+        set("sui-price","$"+nf2.format(suiPriceUSD));
+        set("sui-value","$"+nf2.format(CFG.suiHoldings*suiPriceUSD));
 
         // ---- Strategy-style Yield / Gain YTD ----
         const yieldYTD = (CFG.priceJan1>0) ? (suiPriceUSD / CFG.priceJan1) - 1 : 0;
         const gainYTD  = CFG.suiHoldingsStart * yieldYTD * suiPriceUSD;
 
         set("sui-yield-ytd", nfPct.format(yieldYTD));
-        set("sui-gain-ytd-usd", "£"+nf2.format(gainYTD));
+        set("sui-gain-ytd-usd", "$"+nf2.format(gainYTD));
 
-        // Your existing token->£ KPIs (plain valuation of added tokens)
-        set("sui-gain-qtd-usd","£"+nf2.format(CFG.suiGainQTD  * suiPriceUSD));
-        set("sui-gain-2024-usd","£"+nf2.format(CFG.suiGain2024 * suiPriceUSD));
+        // Token valuation gains
+        set("sui-gain-qtd-usd","$"+nf2.format(CFG.suiGainQTD  * suiPriceUSD));
+        set("sui-gain-2024-usd","$"+nf2.format(CFG.suiGain2024 * suiPriceUSD));
       }
 
       // tokens
@@ -267,4 +267,3 @@
   </script>
 </body>
 </html>
-
