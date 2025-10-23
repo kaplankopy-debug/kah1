@@ -137,7 +137,7 @@
     let suiPriceGBP=null;
 
     function renderAll(){
-      set("sui-held", nfInt.format(CFG.suiHoldings));
+      set("sui-holdings", nfInt.format(CFG.suiHoldings));
       if(suiPriceGBP){
         set("sui-price","£"+nf2.format(suiPriceGBP));
         set("sui-value","£"+nf2.format(CFG.suiHoldings*suiPriceGBP));
@@ -177,6 +177,7 @@
   </script>
 </body>
 </html>
+
 
 
 
