@@ -8,19 +8,22 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
   <style>
     :root{
-      --bg:#0b1013;
-      --text:#eaf7f5;
-      --muted:#8ab6b1;
-      --brand:#14b8a6;
-      --accent:#ff7a1a;
-      --ring:rgba(20,184,166,.25);
+      /* === SUI-inspired palette === */
+      --bg:#e9f4ff;          /* pale sky background */
+      --text:#0b1013;        /* near-black text for contrast */
+      --muted:#4d6a88;       /* muted steel blue */
+      --brand:#00baff;       /* Sui primary blue */
+      --accent:#0090ff;      /* deeper accent blue */
+      --ring:rgba(0,186,255,.25);
     }
+
     *{box-sizing:border-box;margin:0;padding:0;font-family:Inter,sans-serif}
     body{background:var(--bg);color:var(--text);}
     .container{max-width:1200px;margin:0 auto;padding:80px 24px;text-align:center}
-    h1{font-size:48px;font-weight:800;margin-bottom:8px}
+    h1{font-size:48px;font-weight:800;margin-bottom:8px;color:var(--brand);}
     p.sub{color:var(--muted);font-size:18px;margin-bottom:40px}
     .grid{
       display:grid;
@@ -31,7 +34,7 @@
       text-align:left;
     }
     .kpi .title{
-      color:#a7e0ff;
+      color:var(--accent);
       font-size:22px;
       font-weight:700;
       margin-bottom:8px;
@@ -43,16 +46,21 @@
       line-height:1;
       letter-spacing:1px;
     }
-    .token{color:var(--accent);}
+    .token{color:var(--brand);}
     .money{color:var(--text);}
     .meta{margin-top:42px;display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
     .chip{
-      display:inline-flex;gap:8px;align-items:center;border:1px solid var(--ring);
-      padding:8px 12px;border-radius:999px;color:var(--muted);font-size:12px
+      display:inline-flex;gap:8px;align-items:center;
+      border:1px solid var(--ring);
+      padding:8px 12px;border-radius:999px;
+      color:var(--muted);font-size:12px;
+      background:rgba(255,255,255,0.6);
+      backdrop-filter:blur(4px);
     }
     footer{margin-top:64px;color:var(--muted);font-size:14px}
   </style>
 </head>
+
 <body>
   <div class="container">
     <h1>Kaplan Asset Holdings</h1>
@@ -76,7 +84,6 @@
 
     <!-- === KPI GRID === -->
     <div class="grid">
-      <!-- Manual token metrics -->
       <div class="kpi">
         <div class="title">SUI Gain QTD</div>
         <div class="value token" id="sui-gain-qtd">—</div>
@@ -89,8 +96,6 @@
         <div class="title">SUI Gain 2024</div>
         <div class="value token" id="sui-gain-2024">—</div>
       </div>
-
-      <!-- Auto £ metrics -->
       <div class="kpi">
         <div class="title">SUI £ Gain QTD (£M)</div>
         <div class="value money" id="sui-gain-qtd-gbp">—</div>
@@ -105,53 +110,47 @@
       </div>
     </div>
 
-    <!-- meta -->
     <div class="meta">
       <span class="chip"><span>As of</span><strong id="as-of">—</strong></span>
       <span class="chip" id="price-status"><span>Status</span><strong>Loading…</strong></span>
     </div>
 
     <footer>
-      <p> All prices update automatically via CoinGecko.</p>
+      <p>All prices update automatically via CoinGecko.</p>
     </footer>
   </div>
 
-  <!-- ====== LIVE PRICE + SIMPLE CALC ====== -->
+  <!-- ====== JS unchanged ====== -->
   <script>
   (function(){
     const CFG = {
-      locale: "en-GB",
-      pricePollEveryMs: 60000, // refresh every minute
-      // === ENTER YOUR OWN NUMBERS BELOW ===
-      suiHoldings: 5642,
-      suiGainQTD: 0,      // manual entry (SUI)
-      suiGainYTD: 5642,   // manual entry (SUI)
-      suiGain2024: 5642   // manual entry (SUI)
+      locale:"en-GB",
+      pricePollEveryMs:60000,
+      suiHoldings:5642,
+      suiGainQTD:0,
+      suiGainYTD:5642,
+      suiGain2024:5642
     };
 
-    const nfInt = new Intl.NumberFormat(CFG.locale,{maximumFractionDigits:0});
-    const nf2 = new Intl.NumberFormat(CFG.locale,{minimumFractionDigits:2,maximumFractionDigits:2});
-    const nf0 = new Intl.NumberFormat(CFG.locale,{maximumFractionDigits:0});
+    const nfInt=new Intl.NumberFormat(CFG.locale,{maximumFractionDigits:0});
+    const nf2=new Intl.NumberFormat(CFG.locale,{minimumFractionDigits:2,maximumFractionDigits:2});
+    const nf0=new Intl.NumberFormat(CFG.locale,{maximumFractionDigits:0});
     const set=(id,txt)=>{const el=document.getElementById(id);if(el)el.textContent=txt};
 
     let suiPriceGBP=null;
 
     function renderAll(){
-      set("sui-holdings", nfInt.format(CFG.suiHoldings));
+      set("sui-holdings",nfInt.format(CFG.suiHoldings));
       if(suiPriceGBP){
         set("sui-price","£"+nf2.format(suiPriceGBP));
         set("sui-value","£"+nf2.format(CFG.suiHoldings*suiPriceGBP));
-
-        // £ gains (millions)
         set("sui-gain-qtd-gbp","£"+nf0.format(Math.round((CFG.suiGainQTD*suiPriceGBP)/1_000_000)));
         set("sui-gain-ytd-gbp","£"+nf0.format(Math.round((CFG.suiGainYTD*suiPriceGBP)/1_000_000)));
         set("sui-gain-2024-gbp","£"+nf0.format(Math.round((CFG.suiGain2024*suiPriceGBP)/1_000_000)));
       }
-
-      // manual SUI gains
-      set("sui-gain-qtd", nfInt.format(CFG.suiGainQTD));
-      set("sui-gain-ytd", nfInt.format(CFG.suiGainYTD));
-      set("sui-gain-2024", nfInt.format(CFG.suiGain2024));
+      set("sui-gain-qtd",nfInt.format(CFG.suiGainQTD));
+      set("sui-gain-ytd",nfInt.format(CFG.suiGainYTD));
+      set("sui-gain-2024",nfInt.format(CFG.suiGain2024));
     }
 
     async function fetchPrice(){
@@ -177,9 +176,3 @@
   </script>
 </body>
 </html>
-
-
-
-
-
-
