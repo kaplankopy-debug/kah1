@@ -115,8 +115,21 @@
 
   <div class="container">
     <h1>Treasury Analytics</h1>
-    <p class="sub">Sui token and USD gains, updated live.</p>
+    <p class="sub">Sui token and USD metrics with live pricing.</p>
 
+    <!-- === TOP ROW (CORE) === -->
+    <div class="grid" style="margin-bottom:48px">
+      <div class="kpi">
+        <div class="title">SUI Price (USD)</div>
+        <div class="value" id="sui-price">—</div>
+      </div>
+      <div class="kpi">
+        <div class="title">SUI Holdings</div>
+        <div class="value" id="sui-holdings">—</div>
+      </div>
+    </div>
+
+    <!-- === MAIN KPI GRID === -->
     <div class="grid">
       <!-- TOKEN METRICS -->
       <div class="kpi">
@@ -162,6 +175,7 @@
     const CFG = {
       locale: "en-US",
       pricePollEveryMs: 60000, // 1 min refresh
+      suiHoldings: 5642,   // total tokens held now
       suiGainQTD: 0,       // tokens gained this quarter
       suiGainYTD: 5642,    // tokens gained this year
       suiGain2025: 5642    // tokens gained this year (full-year)
@@ -174,7 +188,9 @@
     let suiPriceUSD=null;
 
     function renderAll(){
+      set("sui-holdings", nfInt.format(CFG.suiHoldings));
       if(suiPriceUSD){
+        set("sui-price","$"+nf2.format(suiPriceUSD));
         set("sui-gain-qtd-usd","$"+nf2.format(CFG.suiGainQTD  * suiPriceUSD));
         set("sui-gain-ytd-usd","$"+nf2.format(CFG.suiGainYTD  * suiPriceUSD));
         set("sui-gain-2025-usd","$"+nf2.format(CFG.suiGain2025 * suiPriceUSD));
