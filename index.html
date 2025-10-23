@@ -11,18 +11,52 @@
 
   <style>
     :root{
-      /* === Refined SUI palette === */
-      --bg:#f4faff;          /* clean white-blue background */
-      --text:#003e6b;        /* deep blue text for titles */
-      --muted:#4d6a88;       /* muted steel blue */
-      --sui-blue:#00baff;    /* core Sui light blue */
+      /* SUI look */
+      --bg:#f4faff;
+      --text:#003e6b;
+      --muted:#4d6a88;
+      --sui-blue:#00baff;
       --ring:rgba(0,186,255,.25);
+
+      /* Top bar */
+      --topbar-bg:#0b2a45;  /* darker corporate blue */
+      --topbar-text:#ffffff;
     }
 
     *{box-sizing:border-box;margin:0;padding:0;font-family:Inter,sans-serif}
     body{background:var(--bg);color:var(--text);}
-    .container{max-width:1200px;margin:0 auto;padding:80px 24px;text-align:center}
-    h1{font-size:48px;font-weight:800;margin-bottom:8px;color:var(--text);}
+
+    /* ===== Top banner ===== */
+    .topbar{
+      width:100%;
+      background:var(--topbar-bg);
+      color:var(--topbar-text);
+    }
+    .topbar .inner{
+      max-width:1200px;
+      margin:0 auto;
+      padding:14px 24px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+    }
+    .brand{
+      font-weight:700;
+      font-size:18px;       /* smaller, corporate */
+      letter-spacing:.2px;
+      white-space:nowrap;
+    }
+    .brand span{opacity:.9}
+
+    /* optional right-side slot if you want later */
+    .topbar-right{
+      font-size:12px;
+      opacity:.85;
+    }
+
+    .container{max-width:1200px;margin:0 auto;padding:48px 24px;text-align:center}
+    h1{font-size:36px;font-weight:800;margin-bottom:8px;color:var(--text);}
     p.sub{color:var(--muted);font-size:18px;margin-bottom:40px}
 
     .grid{
@@ -65,9 +99,18 @@
 </head>
 
 <body>
+  <!-- Top banner -->
+  <header class="topbar" role="banner">
+    <div class="inner">
+      <div class="brand">Kaplan Asset Holdings</div>
+      <!-- Keep empty for now; you can show env/status later -->
+      <div class="topbar-right"></div>
+    </div>
+  </header>
+
   <div class="container">
-    <h1>Kaplan Asset Holdings</h1>
-    <p class="sub">Treasury Analytics.</p>
+    <h1>Treasury Analytics</h1>
+    <p class="sub">Sui KPIs in GBP with live pricing.</p>
 
     <!-- === CORE METRICS === -->
     <div class="grid" style="margin-bottom:48px">
@@ -124,7 +167,7 @@
     </footer>
   </div>
 
-  <!-- ====== JS unchanged ====== -->
+  <!-- ===== JS (unchanged) ===== -->
   <script>
   (function(){
     const CFG = {
