@@ -124,7 +124,7 @@
       pricePollEveryMs: 60000, // refresh every minute
       // === ENTER YOUR OWN NUMBERS BELOW ===
       suiHoldings: 5642.55,
-      suiGainQTD: 5642.55,      // manual entry (SUI)
+      suiGainQTD: 0,      // manual entry (SUI)
       suiGainYTD: 5642.55,   // manual entry (SUI)
       suiGain2024: 15642.55   // manual entry (SUI)
     };
@@ -137,10 +137,10 @@
     let suiPriceGBP=null;
 
     function renderAll(){
-      set("sui-held", nfInt.format(CFG.suiHeld));
+      set("sui-held", nfInt.format(CFG.suiHoldings));
       if(suiPriceGBP){
         set("sui-price","£"+nf2.format(suiPriceGBP));
-        set("sui-value","£"+nf2.format(CFG.suiHeld*suiPriceGBP));
+        set("sui-value","£"+nf2.format(CFG.suiHoldings*suiPriceGBP));
 
         // £ gains (millions)
         set("sui-gain-qtd-gbp","£"+nf0.format(Math.round((CFG.suiGainQTD*suiPriceGBP)/1_000_000)));
@@ -177,5 +177,6 @@
   </script>
 </body>
 </html>
+
 
 
