@@ -11,110 +11,76 @@
 
   <style>
     :root{
-      --bg:#f4faff;
-      --text:#003e6b;
-      --muted:#4d6a88;
-      --sui-blue:#00baff;
-      --ring:rgba(0,186,255,.25);
-      --topbar-bg:#0b2a45;
-      --topbar-text:#ffffff;
+      --bg:#f4faff; --text:#003e6b; --muted:#4d6a88;
+      --sui-blue:#00baff; --ring:rgba(0,186,255,.25);
+      --topbar-bg:#0b2a45; --topbar-text:#ffffff;
       --glow-strength:0.55;
     }
 
     *{box-sizing:border-box;margin:0;padding:0}
     html{font-size:16px}
     body{
-      background:var(--bg);
-      color:var(--text);
+      background:var(--bg); color:var(--text);
       font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-      line-height:1.5;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
+      line-height:1.5; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
       font-feature-settings:"tnum" 1,"lnum" 1;
-      position:relative;
-      overflow-x:hidden;
+      position:relative; overflow-x:hidden;
     }
 
+    /* Ambient glow (background only) */
     body::before{
-      content:"";
-      position:fixed;
-      top:-120px; right:-120px;
-      width:520px; height:520px;
-      pointer-events:none;
+      content:""; position:fixed; top:-120px; right:-120px; width:520px; height:520px; pointer-events:none;
       background:
         radial-gradient(40% 40% at 70% 30%, rgba(56,232,255,.65) 0%, rgba(56,232,255,0) 70%),
         radial-gradient(55% 55% at 35% 65%, rgba(106,108,255,.55) 0%, rgba(106,108,255,0) 70%);
-      filter: blur(40px) saturate(120%);
-      opacity: var(--glow-strength);
-      z-index:0;
+      filter: blur(40px) saturate(120%); opacity: var(--glow-strength); z-index:0;
     }
 
-    .topbar{width:100%;background:var(--topbar-bg);color:var(--topbar-text);position:relative;z-index:1}
-    .topbar .inner{
-      max-width:1200px;margin:0 auto;padding:12px 24px;
-      display:flex;align-items:center;justify-content:space-between;gap:16px;
-    }
-    .brand{font-weight:700;font-size:1rem;letter-spacing:.2px;white-space:nowrap}
+    /* Header */
+    .topbar{width:100%; background:var(--topbar-bg); color:var(--topbar-text); position:relative; z-index:1}
+    .topbar .inner{max-width:1200px; margin:0 auto; padding:12px 24px; display:flex; align-items:center}
+    .brand{font-weight:700; font-size:1rem; letter-spacing:.2px; white-space:nowrap}
 
-    .container{max-width:1200px;margin:0 auto;padding:48px 24px;text-align:center;position:relative;z-index:1}
-    h1{font-size:2rem;font-weight:800;letter-spacing:.2px;margin-bottom:8px}
-    p.sub{color:var(--muted);font-size:1.125rem;margin-bottom:40px}
+    /* Layout */
+    .container{max-width:1200px; margin:0 auto; padding:48px 24px; text-align:center; position:relative; z-index:1}
+    h1{font-size:2rem; font-weight:800; letter-spacing:.2px; margin-bottom:8px}
+    p.sub{color:var(--muted); font-size:1.125rem; margin-bottom:40px}
 
-    /* Core metrics grid (3 columns, symmetric) */
-    .core-grid{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:40px;
-      justify-items:center;
-      align-items:start;
-      margin-bottom:48px;
-    }
+    /* Grids */
+    .core-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:40px; justify-items:center; align-items:start; margin-bottom:48px}
+    .grid{display:grid; grid-template-columns:repeat(3,1fr); gap:40px 48px; justify-items:center; text-align:left}
 
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(3,1fr);
-      gap:40px 48px;
-      justify-items:center;
-      text-align:left;
-    }
+    /* KPI */
+    .kpi{text-align:left; max-width:240px}
+    .title{color:var(--muted); font-size:.875rem; font-weight:700; letter-spacing:.2px; margin-bottom:6px; display:flex; align-items:center; gap:8px}
+    .value{font-size:3.375rem; font-weight:800; line-height:1.12; letter-spacing:.2px; color:var(--sui-blue)}
 
-    .kpi{
-      text-align:left;
-      max-width:220px;
+    /* Tooltip bubble */
+    .help{
+      display:inline-flex; align-items:center; justify-content:center;
+      width:18px; height:18px; border-radius:50%; border:1px solid var(--ring);
+      font-size:11px; color:var(--muted); cursor:default; position:relative; user-select:none;
     }
+    .help::after{
+      content:attr(data-tip);
+      position:absolute; left:0; top:26px; min-width:240px; max-width:340px;
+      background:#2b2f33; color:#fff; font-size:.75rem; line-height:1.35;
+      padding:10px 12px; border-radius:8px; box-shadow:0 8px 24px rgba(0,0,0,.25);
+      opacity:0; pointer-events:none; transform:translateY(-4px); transition:opacity .15s ease, transform .15s ease; z-index:2;
+      white-space:normal;
+    }
+    .help:hover::after{opacity:1; transform:translateY(0)}
 
-    .kpi .title{
-      color:var(--muted);
-      font-size:.875rem;
-      font-weight:700;
-      letter-spacing:.2px;
-      margin-bottom:6px;
-    }
-    .kpi .value{
-      font-size:3.375rem;
-      font-weight:800;
-      line-height:1.12;
-      letter-spacing:.2px;
-      color:var(--sui-blue);
-      text-shadow:none;
-    }
-
-    .meta{margin-top:42px;display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
-    .chip{
-      display:inline-flex;gap:8px;align-items:center;
-      border:1px solid var(--ring);
-      padding:8px 12px;border-radius:999px;
-      color:var(--muted);font-size:.75rem;
-      background:rgba(255,255,255,0.7);
-      box-shadow:0 0 12px rgba(56,232,255,.15);
-      backdrop-filter:blur(4px);
-    }
-
-    footer{margin-top:64px;color:var(--muted);font-size:.875rem;text-align:center}
+    /* Meta/footer */
+    .meta{margin-top:42px; display:flex; gap:12px; flex-wrap:wrap; justify-content:center}
+    .chip{display:inline-flex; gap:8px; align-items:center; border:1px solid var(--ring);
+          padding:8px 12px; border-radius:999px; color:var(--muted); font-size:.75rem;
+          background:rgba(255,255,255,0.7); box-shadow:0 0 12px rgba(56,232,255,.15); backdrop-filter:blur(4px)}
+    footer{margin-top:64px; color:var(--muted); font-size:.875rem; text-align:center}
 
     @media (max-width:800px){
       .core-grid,.grid{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
-      .kpi .value{font-size:2.75rem}
+      .value{font-size:2.75rem}
       h1{font-size:1.75rem}
     }
   </style>
@@ -122,57 +88,83 @@
 
 <body>
   <header class="topbar">
-    <div class="inner">
-      <div class="brand">Kaplan Asset Holdings</div>
-    </div>
+    <div class="inner"><div class="brand">Kaplan Asset Holdings</div></div>
   </header>
 
   <div class="container">
     <h1>Treasury Analytics</h1>
     <p class="sub">Sui token and USD metrics with live pricing.</p>
 
-    <!-- === TOP ROW (3-column symmetric) === -->
+    <!-- TOP ROW -->
     <div class="core-grid">
       <div class="kpi">
-        <div class="title">SUI Price (USD)</div>
+        <div class="title">
+          SUI Price (USD)
+          <span class="help" data-tip="Live price of SUI in USD. Source: CoinGecko (USD).">i</span>
+        </div>
         <div class="value" id="sui-price">—</div>
       </div>
+
       <div class="kpi">
-        <div class="title">SUI Holdings</div>
+        <div class="title">
+          SUI Holdings
+          <span class="help" data-tip="Total SUI tokens currently held in treasury. Manually entered.">i</span>
+        </div>
         <div class="value" id="sui-holdings">—</div>
       </div>
-      <div class="kpi">
-        <div class="title"> </div> <!-- empty for balance -->
-      </div>
+
+      <div class="kpi"><div class="title">&nbsp;</div></div>
     </div>
 
-    <!-- === MAIN KPI GRID (symmetrical) === -->
+    <!-- MAIN GRID -->
     <div class="grid">
-      <!-- TOKEN METRICS -->
+      <!-- TOKENS -->
       <div class="kpi">
-        <div class="title">SUI Gain QTD (tokens)</div>
+        <div class="title">
+          SUI Gain QTD (tokens)
+          <span class="help" data-tip="Net SUI added since quarter start: buys + earnings − sales/transfers.">i</span>
+        </div>
         <div class="value" id="sui-gain-qtd">—</div>
       </div>
+
       <div class="kpi">
-        <div class="title">SUI Gain YTD (tokens)</div>
+        <div class="title">
+          SUI Gain YTD (tokens)
+          <span class="help" data-tip="Net SUI added since Jan 1: buys + earnings − sales/transfers.">i</span>
+        </div>
         <div class="value" id="sui-gain-ytd">—</div>
       </div>
+
       <div class="kpi">
-        <div class="title">SUI Gain 2025 (tokens)</div>
+        <div class="title">
+          SUI Gain 2025 (tokens)
+          <span class="help" data-tip="Total SUI tokens gained in calendar year 2025.">i</span>
+        </div>
         <div class="value" id="sui-gain-2025">—</div>
       </div>
 
-      <!-- USD METRICS -->
+      <!-- USD (price-change × starting tokens) -->
       <div class="kpi">
-        <div class="title">SUI $ Gain QTD</div>
+        <div class="title">
+          SUI $ Gain QTD
+          <span class="help" data-tip="$ Gain QTD = Holdings at quarter start × (Current price − Price at quarter start).">i</span>
+        </div>
         <div class="value" id="sui-gain-qtd-usd">—</div>
       </div>
+
       <div class="kpi">
-        <div class="title">SUI $ Gain YTD</div>
+        <div class="title">
+          SUI $ Gain YTD
+          <span class="help" data-tip="$ Gain YTD = Holdings on Jan 1 × (Current price − Price on Jan 1).">i</span>
+        </div>
         <div class="value" id="sui-gain-ytd-usd">—</div>
       </div>
+
       <div class="kpi">
-        <div class="title">SUI $ Gain 2025</div>
+        <div class="title">
+          SUI $ Gain 2025
+          <span class="help" data-tip="$ Gain 2025 = Holdings on Jan 1, 2025 × (Current price − Price on Jan 1, 2025).">i</span>
+        </div>
         <div class="value" id="sui-gain-2025-usd">—</div>
       </div>
     </div>
@@ -182,38 +174,60 @@
       <span class="chip" id="price-status"><span>Status</span><strong>Loading…</strong></span>
     </div>
 
-    <footer>
-      <p>Prices update automatically via CoinGecko (USD).</p>
-    </footer>
+    <footer><p>Prices update automatically via CoinGecko (USD).</p></footer>
   </div>
 
   <script>
   (function(){
     const CFG = {
       locale: "en-US",
-      pricePollEveryMs: 60000,
-      suiHoldings: 5642,   // your current total SUI
-      suiGainQTD: 0,
-      suiGainYTD: 5642,
-      suiGain2025: 5642
+      pricePollEveryMs: 60000,       // refresh every minute
+
+      // ---- Your manual inputs ----
+      suiHoldings: 5642,             // current total SUI
+
+      // Token gains (top-middle grid)
+      suiGainQTD:   0,
+      suiGainYTD:   5642,
+      suiGain2025:  5642,
+
+      // Price-change $ metrics need period START tokens and START price:
+      // (These are what makes it "MicroStrategy-like")
+      holdingsStartQTD:  5000,       // SUI held at quarter start
+      priceStartQTD:     2.10,       // SUI USD price at quarter start
+
+      holdingsStartYTD:  5200,       // SUI held on Jan 1
+      priceJan1:         2.00,       // SUI USD price on Jan 1
+
+      holdingsStart2025: 5200,       // SUI held on Jan 1, 2025
+      priceJan1_2025:    2.00        // SUI USD price on Jan 1, 2025
     };
 
     const nfInt = new Intl.NumberFormat(CFG.locale,{maximumFractionDigits:0});
-    const nf2 = new Intl.NumberFormat(CFG.locale,{minimumFractionDigits:2,maximumFractionDigits:2});
-    const set = (id,txt)=>{const el=document.getElementById(id);if(el)el.textContent=txt};
+    const nf2  = new Intl.NumberFormat(CFG.locale,{minimumFractionDigits:2,maximumFractionDigits:2});
+    const set  = (id,txt)=>{const el=document.getElementById(id);if(el)el.textContent=txt};
 
-    let suiPriceUSD=null;
+    let suiPriceUSD = null;
 
     function renderAll(){
+      // Top row
       set("sui-holdings", nfInt.format(CFG.suiHoldings));
       if(suiPriceUSD){
         set("sui-price","$"+nf2.format(suiPriceUSD));
-        set("sui-gain-qtd-usd","$"+nf2.format(CFG.suiGainQTD  * suiPriceUSD));
-        set("sui-gain-ytd-usd","$"+nf2.format(CFG.suiGainYTD  * suiPriceUSD));
-        set("sui-gain-2025-usd","$"+nf2.format(CFG.suiGain2025 * suiPriceUSD));
+
+        // ---- $ metrics: price-change × starting tokens ----
+        const gainQTD  = (CFG.holdingsStartQTD  || 0) * (suiPriceUSD - (CFG.priceStartQTD   || 0));
+        const gainYTD  = (CFG.holdingsStartYTD  || 0) * (suiPriceUSD - (CFG.priceJan1       || 0));
+        const gain2025 = (CFG.holdingsStart2025 || 0) * (suiPriceUSD - (CFG.priceJan1_2025  || 0));
+
+        set("sui-gain-qtd-usd",  "$"+nf2.format(gainQTD));
+        set("sui-gain-ytd-usd",  "$"+nf2.format(gainYTD));
+        set("sui-gain-2025-usd","$"+nf2.format(gain2025));
       }
-      set("sui-gain-qtd", nfInt.format(CFG.suiGainQTD));
-      set("sui-gain-ytd", nfInt.format(CFG.suiGainYTD));
+
+      // Token displays (manual)
+      set("sui-gain-qtd",  nfInt.format(CFG.suiGainQTD));
+      set("sui-gain-ytd",  nfInt.format(CFG.suiGainYTD));
       set("sui-gain-2025", nfInt.format(CFG.suiGain2025));
     }
 
