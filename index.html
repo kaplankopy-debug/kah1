@@ -22,7 +22,7 @@
       --topbar-bg:#0b2a45;
       --topbar-text:#ffffff;
 
-      /* Glow palette */
+      /* Ambient glow */
       --glow-strength:0.55;
     }
 
@@ -91,7 +91,7 @@
       line-height:1.12;
       letter-spacing:.2px;
       color:var(--sui-blue);
-      text-shadow:none; /* crisp text */
+      text-shadow:none;
     }
 
     /* Meta chips */
@@ -127,7 +127,7 @@
 
   <div class="container">
     <h1>Treasury Analytics</h1>
-    <p class="sub">Sui KPIs in GBP with live pricing.</p>
+    <p class="sub">Sui KPIs with live pricing.</p>
 
     <!-- === CORE METRICS === -->
     <div class="grid" style="margin-bottom:48px">
@@ -145,33 +145,40 @@
       </div>
     </div>
 
-    <!-- === KPI GRID === -->
+    <!-- === KPI GRID (Strategy-style) === -->
     <div class="grid">
-      <!-- Manual token metrics -->
+      <!-- Yield KPI (price performance) -->
+      <div class="kpi">
+        <div class="title" title="(Current Price ÷ Price on Jan 1) − 1">SUI Yield YTD (%)</div>
+        <div class="value" id="sui-yield-ytd">—</div>
+      </div>
+
+      <!-- Strategy-style Gain YTD -->
+      <div class="kpi">
+        <div class="title" title="(Holdings at start of year) × (Yield YTD) × (Current Price)">SUI £ Gain YTD</div>
+        <div class="value" id="sui-gain-ytd-gbp">—</div>
+      </div>
+
+      <!-- Your existing token/£ KPIs (unchanged logic) -->
       <div class="kpi">
         <div class="title">SUI Gain QTD (tokens)</div>
         <div class="value" id="sui-gain-qtd">—</div>
       </div>
       <div class="kpi">
         <div class="title">SUI Gain YTD (tokens)</div>
-        <div class="value" id="sui-gain-ytd">—</div>
+        <div class="value" id="sui-gain-ytd-tokens">—</div>
       </div>
       <div class="kpi">
-        <div class="title">SUI Gain 2024 (tokens)</div>
+        <div class="title">SUI Gain 2025 (tokens)</div>
         <div class="value" id="sui-gain-2024">—</div>
       </div>
 
-      <!-- Auto £ metrics (not in millions) -->
       <div class="kpi">
         <div class="title">SUI £ Gain QTD</div>
         <div class="value" id="sui-gain-qtd-gbp">—</div>
       </div>
       <div class="kpi">
-        <div class="title">SUI £ Gain YTD</div>
-        <div class="value" id="sui-gain-ytd-gbp">—</div>
-      </div>
-      <div class="kpi">
-        <div class="title">SUI £ Gain 2024</div>
+        <div class="title">SUI £ Gain 2025</div>
         <div class="value" id="sui-gain-2024-gbp">—</div>
       </div>
     </div>
@@ -187,52 +194,64 @@
     </footer>
   </div>
 
-  <!-- ====== LIVE PRICE + SIMPLE CALC ====== -->
+  <!-- ====== LIVE PRICE + CALCS ====== -->
   <script>
   (function(){
     const CFG = {
       locale: "en-GB",
       pricePollEveryMs: 60000, // refresh every minute
-      // === ENTER YOUR OWN NUMBERS BELOW (TOKENS) ===
-      suiHoldings: 5650,
-      suiGainQTD: 250,      // manual entry (SUI tokens gained this quarter)
-      suiGainYTD: 3000,   // manual entry (SUI tokens gained this year)
-      suiGain2024: 2500   // manual entry (SUI tokens gained in 2024)
+
+      // === ENTER YOUR NUMBERS HERE ===
+      suiHoldings: 5642,        // total tokens you hold now
+      suiHoldingsStart: 0,   // tokens held at start of the year (Jan 1)
+      priceJan1: 4.28,          // SUI GBP price on Jan 1 of the current year
+
+      // Optional token-based KPIs you already use
+      suiGainQTD: 0,            // net tokens added this quarter
+      suiGainYTD: 642,          // net tokens added since Jan 1
+      suiGain2024: 5642         // example full-year tokens (rename as needed)
     };
 
     const nfInt = new Intl.NumberFormat(CFG.locale,{maximumFractionDigits:0});
     const nf2  = new Intl.NumberFormat(CFG.locale,{minimumFractionDigits:2,maximumFractionDigits:2});
+    const nfPct= new Intl.NumberFormat(CFG.locale,{style:"percent",minimumFractionDigits:1,maximumFractionDigits:1});
     const set  = (id,txt)=>{const el=document.getElementById(id);if(el)el.textContent=txt};
 
-    let suiPriceGBP=null;
+    let suiPriceUSD=null;
 
     function renderAll(){
       // core
       set("sui-holdings", nfInt.format(CFG.suiHoldings));
-      if(suiPriceGBP){
-        set("sui-price","£"+nf2.format(suiPriceGBP));
-        set("sui-value","£"+nf2.format(CFG.suiHoldings*suiPriceGBP));
+      if(suiPriceUSD){
+        set("sui-price","£"+nf2.format(suiPriceUSD));
+        set("sui-value","£"+nf2.format(CFG.suiHoldings*suiPriceUSD));
 
-        // £ gains (plain £, not millions)
-        set("sui-gain-qtd-gbp","£"+nf2.format(CFG.suiGainQTD * suiPriceGBP));
-        set("sui-gain-ytd-gbp","£"+nf2.format(CFG.suiGainYTD * suiPriceGBP));
-        set("sui-gain-2024-gbp","£"+nf2.format(CFG.suiGain2024 * suiPriceGBP));
+        // ---- Strategy-style Yield / Gain YTD ----
+        const yieldYTD = (CFG.priceJan1>0) ? (suiPriceUSD / CFG.priceJan1) - 1 : 0;
+        const gainYTD  = CFG.suiHoldingsStart * yieldYTD * suiPriceUSD;
+
+        set("sui-yield-ytd", nfPct.format(yieldYTD));
+        set("sui-gain-ytd-usd", "£"+nf2.format(gainYTD));
+
+        // Your existing token->£ KPIs (plain valuation of added tokens)
+        set("sui-gain-qtd-usd","£"+nf2.format(CFG.suiGainQTD  * suiPriceUSD));
+        set("sui-gain-2024-usd","£"+nf2.format(CFG.suiGain2024 * suiPriceUSD));
       }
 
-      // manual SUI gains (tokens)
+      // tokens
       set("sui-gain-qtd", nfInt.format(CFG.suiGainQTD));
-      set("sui-gain-ytd", nfInt.format(CFG.suiGainYTD));
+      set("sui-gain-ytd-tokens", nfInt.format(CFG.suiGainYTD));
       set("sui-gain-2024", nfInt.format(CFG.suiGain2024));
     }
 
     async function fetchPrice(){
       const status=document.getElementById("price-status");
       try{
-        const res=await fetch("https://api.coingecko.com/api/v3/simple/price?ids=sui&vs_currencies=gbp",{cache:"no-store"});
+        const res=await fetch("https://api.coingecko.com/api/v3/simple/price?ids=sui&vs_currencies=usd",{cache:"no-store"});
         const data=await res.json();
-        const price=data?.sui?.gbp;
+        const price=data?.sui?.usd;
         if(typeof price!=="number")throw 0;
-        suiPriceGBP=price;
+        suiPriceUSD=price;
         if(status)status.innerHTML="<span>Status</span><strong>Live</strong>";
         renderAll();
       }catch(e){
@@ -248,4 +267,3 @@
   </script>
 </body>
 </html>
-
