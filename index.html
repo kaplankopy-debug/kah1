@@ -23,8 +23,6 @@
       --topbar-text:#ffffff;
 
       /* Glow palette */
-      --glow-cyan:#38e8ff;
-      --glow-purple:#6a6cff;
       --glow-strength:0.55;
     }
 
@@ -42,14 +40,12 @@
       overflow-x:hidden;
     }
 
-    /* Ambient glow */
+    /* Ambient fluorescent background (no text glow) */
     body::before{
       content:"";
       position:fixed;
-      top:-120px;
-      right:-120px;
-      width:520px;
-      height:520px;
+      top:-120px; right:-120px;
+      width:520px; height:520px;
       pointer-events:none;
       background:
         radial-gradient(40% 40% at 70% 30%, rgba(56,232,255,.65) 0%, rgba(56,232,255,0) 70%),
@@ -69,12 +65,7 @@
 
     /* Layout */
     .container{max-width:1200px;margin:0 auto;padding:48px 24px;text-align:center;position:relative;z-index:1}
-    h1{
-      font-size:2rem;
-      font-weight:800;
-      letter-spacing:.2px;
-      margin-bottom:8px;
-    }
+    h1{font-size:2rem;font-weight:800;letter-spacing:.2px;margin-bottom:8px}
     p.sub{color:var(--muted);font-size:1.125rem;margin-bottom:40px}
 
     .grid{
@@ -86,16 +77,16 @@
       text-align:left;
     }
 
-    /* KPI styling */
+    /* KPI styling (Strategy-like scale) */
     .kpi .title{
       color:var(--muted);
-      font-size:.875rem;
+      font-size:.875rem; /* 14px */
       font-weight:700;
       letter-spacing:.2px;
       margin-bottom:6px;
     }
     .kpi .value{
-      font-size:3.375rem;
+      font-size:3.375rem; /* 54px */
       font-weight:800;
       line-height:1.12;
       letter-spacing:.2px;
@@ -136,15 +127,16 @@
 
   <div class="container">
     <h1>Treasury Analytics</h1>
-    <p class="sub">Sui KPIs in GBP with live pricing</p>
+    <p class="sub">Sui KPIs in GBP with live pricing.</p>
 
+    <!-- === CORE METRICS === -->
     <div class="grid" style="margin-bottom:48px">
       <div class="kpi">
         <div class="title">SUI Holdings</div>
         <div class="value" id="sui-holdings">—</div>
       </div>
       <div class="kpi">
-        <div class="title">SUI Price</div>
+        <div class="title">SUI Price (GBP)</div>
         <div class="value" id="sui-price">—</div>
       </div>
       <div class="kpi">
@@ -153,20 +145,23 @@
       </div>
     </div>
 
+    <!-- === KPI GRID === -->
     <div class="grid">
+      <!-- Manual token metrics -->
       <div class="kpi">
-        <div class="title">SUI Gain QTD</div>
+        <div class="title">SUI Gain QTD (tokens)</div>
         <div class="value" id="sui-gain-qtd">—</div>
       </div>
       <div class="kpi">
-        <div class="title">SUI Gain YTD</div>
+        <div class="title">SUI Gain YTD (tokens)</div>
         <div class="value" id="sui-gain-ytd">—</div>
       </div>
       <div class="kpi">
-        <div class="title">SUI Gain 2024</div>
+        <div class="title">SUI Gain 2024 (tokens)</div>
         <div class="value" id="sui-gain-2024">—</div>
       </div>
 
+      <!-- Auto £ metrics (not in millions) -->
       <div class="kpi">
         <div class="title">SUI £ Gain QTD</div>
         <div class="value" id="sui-gain-qtd-gbp">—</div>
@@ -181,6 +176,7 @@
       </div>
     </div>
 
+    <!-- meta -->
     <div class="meta">
       <span class="chip"><span>As of</span><strong id="as-of">—</strong></span>
       <span class="chip" id="price-status"><span>Status</span><strong>Loading…</strong></span>
@@ -191,36 +187,42 @@
     </footer>
   </div>
 
+  <!-- ====== LIVE PRICE + SIMPLE CALC ====== -->
   <script>
   (function(){
     const CFG = {
-      locale:"en-GB",
-      pricePollEveryMs:60000,
-      suiHoldings:5642,
-      suiGainQTD:0,
-      suiGainYTD:5642,
-      suiGain2024:5642
+      locale: "en-GB",
+      pricePollEveryMs: 60000, // refresh every minute
+      // === ENTER YOUR OWN NUMBERS BELOW (TOKENS) ===
+      suiHoldings: 5642,
+      suiGainQTD: 0,      // manual entry (SUI tokens gained this quarter)
+      suiGainYTD: 5642,   // manual entry (SUI tokens gained this year)
+      suiGain2024: 5642   // manual entry (SUI tokens gained in 2024)
     };
 
-    const nfInt=new Intl.NumberFormat(CFG.locale,{maximumFractionDigits:0});
-    const nf2=new Intl.NumberFormat(CFG.locale,{minimumFractionDigits:2,maximumFractionDigits:2});
-    const nf0=new Intl.NumberFormat(CFG.locale,{maximumFractionDigits:0});
-    const set=(id,txt)=>{const el=document.getElementById(id);if(el)el.textContent=txt};
+    const nfInt = new Intl.NumberFormat(CFG.locale,{maximumFractionDigits:0});
+    const nf2  = new Intl.NumberFormat(CFG.locale,{minimumFractionDigits:2,maximumFractionDigits:2});
+    const set  = (id,txt)=>{const el=document.getElementById(id);if(el)el.textContent=txt};
 
     let suiPriceGBP=null;
 
     function renderAll(){
-      set("sui-holdings",nfInt.format(CFG.suiHoldings));
+      // core
+      set("sui-holdings", nfInt.format(CFG.suiHoldings));
       if(suiPriceGBP){
         set("sui-price","£"+nf2.format(suiPriceGBP));
         set("sui-value","£"+nf2.format(CFG.suiHoldings*suiPriceGBP));
-        set("sui-gain-qtd-gbp","£"+nf0.format(Math.round((CFG.suiGainQTD*suiPriceGBP)/1_000_000)));
-        set("sui-gain-ytd-gbp","£"+nf0.format(Math.round((CFG.suiGainYTD*suiPriceGBP)/1_000_000)));
-        set("sui-gain-2024-gbp","£"+nf0.format(Math.round((CFG.suiGain2024*suiPriceGBP)/1_000_000)));
+
+        // £ gains (plain £, not millions)
+        set("sui-gain-qtd-gbp","£"+nf2.format(CFG.suiGainQTD * suiPriceGBP));
+        set("sui-gain-ytd-gbp","£"+nf2.format(CFG.suiGainYTD * suiPriceGBP));
+        set("sui-gain-2024-gbp","£"+nf2.format(CFG.suiGain2024 * suiPriceGBP));
       }
-      set("sui-gain-qtd",nfInt.format(CFG.suiGainQTD));
-      set("sui-gain-ytd",nfInt.format(CFG.suiGainYTD));
-      set("sui-gain-2024",nfInt.format(CFG.suiGain2024));
+
+      // manual SUI gains (tokens)
+      set("sui-gain-qtd", nfInt.format(CFG.suiGainQTD));
+      set("sui-gain-ytd", nfInt.format(CFG.suiGainYTD));
+      set("sui-gain-2024", nfInt.format(CFG.suiGain2024));
     }
 
     async function fetchPrice(){
@@ -246,5 +248,3 @@
   </script>
 </body>
 </html>
-
-
