@@ -16,6 +16,7 @@
       --glow-strength:0.55; --divider:#d5e7f2;
       --nav-pill:#073055; --nav-pill-active:#0d3c68;
       --row-alt:#f1f7fb; --card:#ffffff;
+      --summary-bg:#e7f6ff;
     }
     *{box-sizing:border-box;margin:0;padding:0}
     body{
@@ -51,19 +52,6 @@
     h1{font-size:1.6rem; font-weight:800; margin-bottom:10px}
     p.sub{color:var(--muted); margin-bottom:20px}
 
-    /* Summary (like Strategy top band) */
-    .summary{
-      display:grid; grid-template-columns:repeat(4,1fr); gap:16px;
-      margin-bottom:20px;
-    }
-    .sum-card{
-      background:var(--card); border:1px solid var(--divider); border-radius:12px;
-      padding:16px; box-shadow:0 6px 20px rgba(0,0,0,.05);
-      display:flex; flex-direction:column; align-items:flex-start;
-    }
-    .sum-label{color:var(--muted); font-size:.85rem; font-weight:700; text-transform:uppercase; letter-spacing:.02em; margin-bottom:6px}
-    .sum-value{color:var(--sui-blue); font-weight:800; font-size:1.6rem; line-height:1}
-
     /* Table */
     .table-wrap{width:100%; overflow:auto; border:1px solid var(--divider); border-radius:12px; background:#fff; box-shadow:0 6px 20px rgba(0,0,0,.05)}
     table{width:100%; border-collapse:collapse; font-variant-numeric:tabular-nums}
@@ -76,19 +64,21 @@
     }
     tbody tr:nth-child(odd){background:var(--row-alt)}
     tbody tr:last-child td{border-bottom:none}
+
+    /* Summary row inside table */
+    .summary-row td{
+      background:var(--summary-bg);
+      font-weight:800;
+      color:var(--text);
+      border-bottom:2px solid var(--divider);
+    }
+    .summary-row td .num{color:var(--sui-blue)}
+
     .num{color:var(--sui-blue); font-weight:800}
 
-    .legend{margin:14px 2px 0; color:var(--muted); font-size:.85rem}
-
-    @media (max-width:900px){
-      .summary{grid-template-columns:repeat(2,1fr)}
-    }
-    @media (max-width:600px){
-      .summary{grid-template-columns:1fr}
+    @media (max-width:720px){
       thead th,tbody td{padding:12px}
       .container{padding:32px 16px}
-      .sum-value{font-size:1.4rem}
-      .legend{font-size:.8rem}
     }
   </style>
 </head>
@@ -107,26 +97,6 @@
     <h1>Purchases</h1>
     <p class="sub">Only SUI acquisitions are shown (no deposits/sells). BTC swaps are valued in GBP using historical prices at the time of trade.</p>
 
-    <!-- Summary band -->
-    <div class="summary">
-      <div class="sum-card">
-        <div class="sum-label">SUI Acquired</div>
-        <div class="sum-value" id="sum-sui">—</div>
-      </div>
-      <div class="sum-card">
-        <div class="sum-label">Avg SUI Cost (GBP)</div>
-        <div class="sum-value" id="sum-avg">—</div>
-      </div>
-      <div class="sum-card">
-        <div class="sum-label">Acq Cost (£)</div>
-        <div class="sum-value" id="sum-cost">—</div>
-      </div>
-      <div class="sum-card">
-        <div class="sum-label">SUI Holdings</div>
-        <div class="sum-value" id="sum-holdings">—</div>
-      </div>
-    </div>
-
     <div class="table-wrap">
       <table id="purchases">
         <thead>
@@ -139,11 +109,9 @@
             <th>SUI Holdings</th>
           </tr>
         </thead>
-        <tbody><!-- rows injected by JS --></tbody>
+        <tbody><!-- summary row + detail rows injected by JS --></tbody>
       </table>
     </div>
-
-    <p class="legend">Avg cost is weighted: Σ(Acq Cost) ÷ Σ(SUI Acquired). Historical GBP prices fetched from CoinGecko.</p>
   </div>
 
   <script>
@@ -151,7 +119,7 @@
     // ====== EDIT THESE TRADES ======
     // type: 'GBP_BUY' (SUI/GBP) or 'BTC_SWAP' (SUI/BTC)
     // Required: date, type, suiAmount
-    // Optional for GBP_BUY: acqCostGBP, feeGBP
+    // Optional for GBP_BUY: acqCostGBP (preferred), feeGBP
     // Optional for BTC_SWAP: btcAmount (if known), feeGBP
     const TRADES = [
       { date: "2025-10-22T11:02:00Z", type: "GBP_BUY",  suiAmount: 823.8576, acqCostGBP: 1500.05, feeGBP: 5.27 },
@@ -189,24 +157,25 @@
       return;
     }
 
-    // Build table rows (newest first)
-    const tbody = document.querySelector("#purchases tbody");
+    // Newest first
+    TRADES.sort((a,b)=> new Date(b.date) - new Date(a.date));
+
+    // Compute rows + totals
     const nf0 = new Intl.NumberFormat("en-GB",{maximumFractionDigits:0});
     const nf2 = new Intl.NumberFormat("en-GB",{minimumFractionDigits:2,maximumFractionDigits:2});
-
-    TRADES.sort((a,b)=> new Date(b.date) - new Date(a.date));
+    const tbody = document.querySelector("#purchases tbody");
 
     let runningHoldings = 0;
     let totalSui = 0, totalCost = 0;
 
-    const rows = TRADES.map((t, idx)=>{
+    const detailRows = TRADES.map((t, idx)=>{
       const ts = toTs(t.date);
       const suiAmt = +t.suiAmount || 0;
       const fee = +t.feeGBP || 0;
 
       let acqCost; // in GBP
       if(t.type === "GBP_BUY"){
-        acqCost = (typeof t.acqCostGBP === "number") ? (+t.acqCostGBP + fee) : (suiAt(ts)*suiAmt + fee);
+        acqCost = (typeof t.acqCostGBP === "number") ? (+t.acqCostGBP + fee) : (suiAt(ts) * suiAmt + fee);
       }else{ // BTC_SWAP
         if(typeof t.btcAmount === "number"){
           acqCost = btcAt(ts) * (+t.btcAmount || 0) + fee;
@@ -217,7 +186,6 @@
 
       const avgCost = suiAmt > 0 ? acqCost / suiAmt : NaN;
 
-      // running + totals
       runningHoldings += suiAmt;
       totalSui += suiAmt;
       totalCost += acqCost;
@@ -237,14 +205,20 @@
       `;
     });
 
-    tbody.innerHTML = rows.join("");
-
-    // Summary band
+    // Summary (as first row under headings)
     const weightedAvg = totalSui > 0 ? (totalCost / totalSui) : NaN;
-    document.getElementById("sum-sui").textContent = totalSui ? nf2.format(totalSui) : "—";
-    document.getElementById("sum-avg").textContent = isFinite(weightedAvg) ? "£"+nf2.format(weightedAvg) : "—";
-    document.getElementById("sum-cost").textContent = "£"+nf2.format(totalCost);
-    document.getElementById("sum-holdings").textContent = nf0.format(runningHoldings);
+    const summaryRow = `
+      <tr class="summary-row">
+        <td>—</td>
+        <td>Summary</td>
+        <td><span class="num">${totalSui ? nf2.format(totalSui) : "—"}</span></td>
+        <td><span class="num">${isFinite(weightedAvg) ? "£"+nf2.format(weightedAvg) : "—"}</span></td>
+        <td><span class="num">£${nf2.format(totalCost)}</span></td>
+        <td><span class="num">${nf0.format(runningHoldings)}</span></td>
+      </tr>
+    `;
+
+    tbody.innerHTML = summaryRow + detailRows.join("");
 
     function escapeHtml(s){return String(s).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
   })();
