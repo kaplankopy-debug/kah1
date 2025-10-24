@@ -15,53 +15,63 @@
       --topbar-bg:#0b2a45; --topbar-text:#ffffff;
       --glow-strength:0.55; --divider:#d5e7f2;
       --nav-pill:#073055; --nav-pill-active:#0d3c68;
-      --row-bg:#ffffff; --row-alt:#f1f7fb;
+      --row-alt:#f1f7fb;
     }
     *{box-sizing:border-box;margin:0;padding:0}
-    body{background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;position:relative}
+    body{
+      background:var(--bg); color:var(--text);
+      font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+      position:relative; overflow-x:hidden;
+    }
 
     /* Ambient glow */
     body::before{
-      content:"";position:fixed;top:-120px;right:-120px;width:520px;height:520px;pointer-events:none;
+      content:""; position:fixed; top:-120px; right:-120px; width:520px; height:520px; pointer-events:none;
       background:
         radial-gradient(40% 40% at 70% 30%, rgba(56,232,255,.65) 0%, rgba(56,232,255,0) 70%),
         radial-gradient(55% 55% at 35% 65%, rgba(106,108,255,.55) 0%, rgba(106,108,255,0) 70%);
-      filter:blur(40px) saturate(120%);opacity:var(--glow-strength);z-index:0;
+      filter:blur(40px) saturate(120%); opacity:var(--glow-strength); z-index:0;
     }
 
     /* Header + Nav */
-    .topbar{width:100%;background:var(--topbar-bg);color:var(--topbar-text);position:relative;z-index:1}
-    .topbar .inner{max-width:1200px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-    .brand{font-weight:700;font-size:1rem;letter-spacing:.2px}
-    .nav{display:flex;gap:6px;flex-wrap:wrap}
-    .nav a{color:#d8e7f7;text-decoration:none;font-weight:600;font-size:.9rem;padding:8px 12px;border-radius:999px;background:var(--nav-pill);border:1px solid rgba(255,255,255,.08)}
+    .topbar{width:100%; background:var(--topbar-bg); color:var(--topbar-text); position:relative; z-index:1}
+    .topbar .inner{max-width:1200px; margin:0 auto; padding:12px 24px; display:flex; align-items:center; justify-content:space-between; gap:12px}
+    .brand{font-weight:700; font-size:1rem; letter-spacing:.2px}
+    .nav{display:flex; gap:6px; flex-wrap:wrap}
+    .nav a{
+      color:#d8e7f7; text-decoration:none; font-weight:600; font-size:.9rem;
+      padding:8px 12px; border-radius:999px; background:var(--nav-pill); border:1px solid rgba(255,255,255,.08)
+    }
     .nav a:hover{background:var(--nav-pill-active)}
-    .nav a.active{background:#128dd6;border-color:transparent;color:#fff}
+    .nav a.active{background:#128dd6; border-color:transparent; color:#fff}
 
-    .container{max-width:1200px;margin:0 auto;padding:48px 24px}
-    h1{font-size:1.6rem;font-weight:800;margin-bottom:10px}
-    p.sub{color:var(--muted);margin-bottom:20px}
+    /* Page */
+    .container{max-width:1200px; margin:0 auto; padding:48px 24px}
+    h1{font-size:1.6rem; font-weight:800; margin-bottom:10px}
+    p.sub{color:var(--muted); margin-bottom:20px}
 
     /* Table */
-    .table-wrap{width:100%;overflow:auto;border:1px solid var(--divider);border-radius:12px;background:#fff;box-shadow:0 6px 20px rgba(0,0,0,.05)}
-    table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+    .table-wrap{width:100%; overflow:auto; border:1px solid var(--divider); border-radius:12px; background:#fff; box-shadow:0 6px 20px rgba(0,0,0,.05)}
+    table{width:100%; border-collapse:collapse; font-variant-numeric:tabular-nums}
     thead th{
-      text-align:left;font-size:.85rem;letter-spacing:.02em;color:var(--muted);font-weight:700;
-      padding:14px 16px;background:#eef6fb;border-bottom:1px solid var(--divider);white-space:nowrap
+      text-align:left; font-size:.85rem; letter-spacing:.02em; color:var(--muted); font-weight:700;
+      padding:14px 16px; background:#eef6fb; border-bottom:1px solid var(--divider); white-space:nowrap
     }
     tbody td{
-      padding:14px 16px;border-bottom:1px solid var(--divider);vertical-align:middle;white-space:nowrap
+      padding:14px 16px; border-bottom:1px solid var(--divider); vertical-align:middle; white-space:nowrap
     }
     tbody tr:nth-child(odd){background:var(--row-alt)}
     tbody tr:last-child td{border-bottom:none}
 
-    /* Numbers in Sui blue */
-    .num{color:var(--sui-blue);font-weight:800}
+    .num{color:var(--sui-blue); font-weight:800}
 
-    /* Mobile */
+    .legend{margin:14px 2px 0; color:var(--muted); font-size:.85rem}
+
     @media (max-width:720px){
-      thead th,tbody td{padding:12px 12px}
+      thead th,tbody td{padding:12px}
       .container{padding:32px 16px}
+      .legend{font-size:.8rem}
     }
   </style>
 </head>
@@ -78,7 +88,9 @@
 
   <div class="container">
     <h1>Purchases</h1>
-    <p class="sub">Lots are shown newest first. Acq Cost (£) includes fees. Avg SUI Cost (GBP) = Acq Cost ÷ SUI Acquired.</p>
+    <p class="sub">
+      Only SUI acquisitions are shown (no deposits/sells). BTC swaps are valued in GBP using historical prices at the time of trade.
+    </p>
 
     <div class="table-wrap">
       <table id="purchases">
@@ -86,6 +98,7 @@
           <tr>
             <th>Count</th>
             <th>Reported</th>
+            <th>Source</th>
             <th>SUI Acquired</th>
             <th>Avg SUI Cost (GBP)</th>
             <th>Acq Cost (£)</th>
@@ -95,61 +108,103 @@
         <tbody><!-- rows injected by JS --></tbody>
       </table>
     </div>
+
+    <p class="legend">Notes: “Source” shows funding (GBP or BTC). Avg cost = Acq Cost ÷ SUI Acquired. Swaps use CoinGecko historical GBP prices.</p>
   </div>
 
   <script>
-  (function(){
-    // === EDIT THIS ARRAY with your actual lots ===
-    // Fields: date (ISO or readable), direction ('BUY'|'SELL'|'DEPOSIT'), pair, amount (tokens), valueGBP, fee
+  (async function(){
+    // === EDIT THIS ARRAY with your real rows ============================
+    // type: 'GBP_BUY' for SUI/GBP, 'BTC_SWAP' for SUI/BTC
+    // Provide at least { date, type, suiAmount }. For BTC swaps, if you know btcAmount, add it (improves precision).
+    // feeGBP is optional (defaults 0). Deposit/sell rows are intentionally omitted.
     const TRADES = [
-      { date: "2025-10-22 11:02", direction: "BUY",     pair:"SUI/GBP", amount: 823.8576, valueGBP: 1500.05, fee: 5.27 },
-      { date: "2025-10-22 11:01", direction: "DEPOSIT", pair:"GBP",     amount: 1505.32,  valueGBP: 1505.32, fee: 0.00 }, // non-token funding (ignored in holdings)
-      { date: "2025-10-21 02:53", direction: "BUY",     pair:"SUI/BTC", amount: 1_050.12, valueGBP: 2.02,    fee: 0.00 }, // sample only
-      { date: "2025-10-20 12:12", direction: "BUY",     pair:"SUI/GBP", amount: 1290.562, valueGBP: 2536.55, fee: 8.91 },
-      { date: "2025-10-10 22:45", direction: "SELL",    pair:"SUI/GBP", amount: 310.9235, valueGBP: 584.99,  fee: 2.05 },
-      { date: "2025-10-07 23:57", direction: "BUY",     pair:"SUI/GBP", amount: 752.561,  valueGBP: 1992.99, fee: 7.00 },
+      // Examples matching your screenshots (replace with your real data)
+      { date: "2025-10-22T11:02:00Z", type: "GBP_BUY",  suiAmount: 823.8576, acqCostGBP: 1500.05, feeGBP: 5.27 },
+      { date: "2025-10-21T02:53:00Z", type: "BTC_SWAP", suiAmount: 1.0512,   feeGBP: 0.00 },                    // no btcAmount known → priced via SUI GBP
+      { date: "2025-10-20T12:12:00Z", type: "GBP_BUY",  suiAmount: 1290.562, acqCostGBP: 2536.55, feeGBP: 8.91 },
+      { date: "2025-10-10T22:45:00Z", type: "BTC_SWAP", suiAmount: 310.9235, feeGBP: 2.05, btcAmount: 0.00337 }, // example with btcAmount
+      { date: "2025-10-07T23:57:00Z", type: "GBP_BUY",  suiAmount: 752.561,  acqCostGBP: 1992.99, feeGBP: 7.00 },
     ];
-    // === end editable ===
+    // ===================================================================
 
-    const locale = "en-GB";
-    const nf0 = new Intl.NumberFormat(locale,{maximumFractionDigits:0});
-    const nf2 = new Intl.NumberFormat(locale,{minimumFractionDigits:2,maximumFractionDigits:2});
+    // Build a date range that covers all trades for efficient price fetch
+    const tTo = (d)=> Math.floor(new Date(d).getTime()/1000);
+    const minTs = Math.min(...TRADES.map(t=>tTo(t.date))) - 86400;   // pad ±1 day
+    const maxTs = Math.max(...TRADES.map(t=>tTo(t.date))) + 86400;
+
+    // Fetch historical GBP prices (range) for SUI and BTC from CoinGecko
+    async function getRange(id){
+      const url = `https://api.coingecko.com/api/v3/coins/${id}/market_chart/range?vs_currency=gbp&from=${minTs}&to=${maxTs}`;
+      const res = await fetch(url, {cache:"no-store"});
+      if(!res.ok) throw new Error(`Failed price fetch: ${id}`);
+      const data = await res.json();
+      // data.prices: [[ms, price], ...]
+      return (ts)=> {
+        const ms = ts*1000;
+        // find nearest point (binary search would be nicer, but simple scan is fine for short ranges)
+        let best = data.prices[0];
+        let bestDiff = Math.abs(best[0] - ms);
+        for(const p of data.prices){
+          const d = Math.abs(p[0]-ms);
+          if(d < bestDiff){ best = p; bestDiff = d; }
+        }
+        return best ? best[1] : NaN;
+      };
+    }
+
+    let suiGBPAt, btcGBPAt;
+    try{
+      [suiGBPAt, btcGBPAt] = await Promise.all([getRange("sui"), getRange("bitcoin")]);
+    }catch(e){
+      console.error(e);
+      alert("Price lookup failed. Please refresh or try again later.");
+      return;
+    }
+
+    // Build rows
+    const tbody = document.querySelector("#purchases tbody");
+    const nf0 = new Intl.NumberFormat("en-GB",{maximumFractionDigits:0});
+    const nf2 = new Intl.NumberFormat("en-GB",{minimumFractionDigits:2,maximumFractionDigits:2});
 
     // Newest first
     TRADES.sort((a,b)=> new Date(b.date) - new Date(a.date));
 
-    const tbody = document.querySelector("#purchases tbody");
     let runningHoldings = 0;
-
     const rows = TRADES.map((t, idx) => {
-      // count
-      const count = TRADES.length - idx;
+      const ts = tTo(t.date);
+      const source = t.type === "BTC_SWAP" ? "BTC" : "GBP";
+      const fee = +t.feeGBP || 0;
+      const suiAmt = +t.suiAmount || 0;
 
-      // Only count SUI movements into 'SUI Acquired' and holdings if pair is SUI/* or */SUI
-      const isSuiPair = /SUI/i.test(t.pair || "");
-      const direction = (t.direction || "").toUpperCase();
-
-      // SUI acquired per lot:
-      let suiAcq = 0;
-      if (isSuiPair) {
-        if (direction === "BUY" || direction === "DEPOSIT") suiAcq = Math.max(+t.amount || 0, 0);
-        if (direction === "SELL") suiAcq = -Math.max(+t.amount || 0, 0);
+      let acqCost;   // in GBP
+      if (t.type === "GBP_BUY") {
+        // Prefer explicit acq cost if provided; otherwise price via SUI GBP
+        acqCost = (typeof t.acqCostGBP === "number")
+          ? +t.acqCostGBP + fee
+          : (suiGBPAt(ts) * suiAmt) + fee;
+      } else {
+        // BTC swap → value paid in BTC, translate to GBP on the day
+        if (typeof t.btcAmount === "number") {
+          acqCost = (btcGBPAt(ts) * (+t.btcAmount || 0)) + fee;
+        } else {
+          // If btcAmount unknown, value the SUI received at SUI's GBP price that day
+          acqCost = (suiGBPAt(ts) * suiAmt) + fee;
+        }
       }
 
-      // Acquisition cost in £ includes fee (SELL lots show the value received; we subtract from holdings but keep Acq Cost positive for display)
-      const acqCost = Math.max((+t.valueGBP || 0) + (+t.fee || 0), 0);
+      const avgCost = suiAmt > 0 ? (acqCost / suiAmt) : NaN;
 
-      // Avg cost per SUI (BUY/DEPOSIT lots only; blank if sell or zero)
-      const avgCost = suiAcq > 0 ? (acqCost / suiAcq) : NaN;
+      // Running holdings: only SUI acquisitions add to holdings (we're not listing sells/deposits here)
+      runningHoldings += suiAmt;
 
-      // Running holdings
-      runningHoldings += suiAcq;
-
+      const count = TRADES.length - idx;
       return `
         <tr>
           <td>${count}</td>
-          <td>${escapeHtml(t.date)}</td>
-          <td class="num">${suiAcq === 0 ? "—" : nf2.format(suiAcq)}</td>
+          <td>${escapeHtml(new Date(t.date).toLocaleString("en-GB",{dateStyle:"medium", timeStyle:"short"}))}</td>
+          <td>${source}</td>
+          <td class="num">${suiAmt ? nf2.format(suiAmt) : "—"}</td>
           <td class="num">${isFinite(avgCost) ? "£"+nf2.format(avgCost) : "—"}</td>
           <td class="num">£${nf2.format(acqCost)}</td>
           <td class="num">${nf0.format(runningHoldings)}</td>
@@ -159,7 +214,9 @@
 
     tbody.innerHTML = rows.join("");
 
-    function escapeHtml(s){return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+    function escapeHtml(s){
+      return String(s).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+    }
   })();
   </script>
 </body>
