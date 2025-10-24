@@ -15,7 +15,7 @@
       --topbar-bg:#0b2a45; --topbar-text:#ffffff;
       --glow-strength:0.55; --divider:#d5e7f2;
       --nav-pill:#073055; --nav-pill-active:#0d3c68;
-      --row-alt:#f1f7fb;
+      --row-alt:#f1f7fb; --card:#ffffff;
     }
     *{box-sizing:border-box;margin:0;padding:0}
     body{
@@ -51,6 +51,19 @@
     h1{font-size:1.6rem; font-weight:800; margin-bottom:10px}
     p.sub{color:var(--muted); margin-bottom:20px}
 
+    /* Summary (like Strategy top band) */
+    .summary{
+      display:grid; grid-template-columns:repeat(4,1fr); gap:16px;
+      margin-bottom:20px;
+    }
+    .sum-card{
+      background:var(--card); border:1px solid var(--divider); border-radius:12px;
+      padding:16px; box-shadow:0 6px 20px rgba(0,0,0,.05);
+      display:flex; flex-direction:column; align-items:flex-start;
+    }
+    .sum-label{color:var(--muted); font-size:.85rem; font-weight:700; text-transform:uppercase; letter-spacing:.02em; margin-bottom:6px}
+    .sum-value{color:var(--sui-blue); font-weight:800; font-size:1.6rem; line-height:1}
+
     /* Table */
     .table-wrap{width:100%; overflow:auto; border:1px solid var(--divider); border-radius:12px; background:#fff; box-shadow:0 6px 20px rgba(0,0,0,.05)}
     table{width:100%; border-collapse:collapse; font-variant-numeric:tabular-nums}
@@ -63,14 +76,18 @@
     }
     tbody tr:nth-child(odd){background:var(--row-alt)}
     tbody tr:last-child td{border-bottom:none}
-
     .num{color:var(--sui-blue); font-weight:800}
 
     .legend{margin:14px 2px 0; color:var(--muted); font-size:.85rem}
 
-    @media (max-width:720px){
+    @media (max-width:900px){
+      .summary{grid-template-columns:repeat(2,1fr)}
+    }
+    @media (max-width:600px){
+      .summary{grid-template-columns:1fr}
       thead th,tbody td{padding:12px}
       .container{padding:32px 16px}
+      .sum-value{font-size:1.4rem}
       .legend{font-size:.8rem}
     }
   </style>
@@ -88,9 +105,27 @@
 
   <div class="container">
     <h1>Purchases</h1>
-    <p class="sub">
-      Only SUI acquisitions are shown (no deposits/sells). BTC swaps are valued in GBP using historical prices at the time of trade.
-    </p>
+    <p class="sub">Only SUI acquisitions are shown (no deposits/sells). BTC swaps are valued in GBP using historical prices at the time of trade.</p>
+
+    <!-- Summary band -->
+    <div class="summary">
+      <div class="sum-card">
+        <div class="sum-label">SUI Acquired</div>
+        <div class="sum-value" id="sum-sui">—</div>
+      </div>
+      <div class="sum-card">
+        <div class="sum-label">Avg SUI Cost (GBP)</div>
+        <div class="sum-value" id="sum-avg">—</div>
+      </div>
+      <div class="sum-card">
+        <div class="sum-label">Acq Cost (£)</div>
+        <div class="sum-value" id="sum-cost">—</div>
+      </div>
+      <div class="sum-card">
+        <div class="sum-label">SUI Holdings</div>
+        <div class="sum-value" id="sum-holdings">—</div>
+      </div>
+    </div>
 
     <div class="table-wrap">
       <table id="purchases">
@@ -98,7 +133,6 @@
           <tr>
             <th>Count</th>
             <th>Reported</th>
-            <th>Source</th>
             <th>SUI Acquired</th>
             <th>Avg SUI Cost (GBP)</th>
             <th>Acq Cost (£)</th>
@@ -109,101 +143,92 @@
       </table>
     </div>
 
-    <p class="legend">Notes: “Source” shows funding (GBP or BTC). Avg cost = Acq Cost ÷ SUI Acquired. Swaps use CoinGecko historical GBP prices.</p>
+    <p class="legend">Avg cost is weighted: Σ(Acq Cost) ÷ Σ(SUI Acquired). Historical GBP prices fetched from CoinGecko.</p>
   </div>
 
   <script>
   (async function(){
-    // === EDIT THIS ARRAY with your real rows ============================
-    // type: 'GBP_BUY' for SUI/GBP, 'BTC_SWAP' for SUI/BTC
-    // Provide at least { date, type, suiAmount }. For BTC swaps, if you know btcAmount, add it (improves precision).
-    // feeGBP is optional (defaults 0). Deposit/sell rows are intentionally omitted.
+    // ====== EDIT THESE TRADES ======
+    // type: 'GBP_BUY' (SUI/GBP) or 'BTC_SWAP' (SUI/BTC)
+    // Required: date, type, suiAmount
+    // Optional for GBP_BUY: acqCostGBP, feeGBP
+    // Optional for BTC_SWAP: btcAmount (if known), feeGBP
     const TRADES = [
-      // Examples matching your screenshots (replace with your real data)
       { date: "2025-10-22T11:02:00Z", type: "GBP_BUY",  suiAmount: 823.8576, acqCostGBP: 1500.05, feeGBP: 5.27 },
-      { date: "2025-10-21T02:53:00Z", type: "BTC_SWAP", suiAmount: 1.0512,   feeGBP: 0.00 },                    // no btcAmount known → priced via SUI GBP
+      { date: "2025-10-21T02:53:00Z", type: "BTC_SWAP", suiAmount: 1.0512,   feeGBP: 0.00 },                      // no btcAmount → priced via SUI GBP
       { date: "2025-10-20T12:12:00Z", type: "GBP_BUY",  suiAmount: 1290.562, acqCostGBP: 2536.55, feeGBP: 8.91 },
-      { date: "2025-10-10T22:45:00Z", type: "BTC_SWAP", suiAmount: 310.9235, feeGBP: 2.05, btcAmount: 0.00337 }, // example with btcAmount
+      { date: "2025-10-10T22:45:00Z", type: "BTC_SWAP", suiAmount: 310.9235, btcAmount: 0.00337, feeGBP: 2.05 }, // if you know BTC used
       { date: "2025-10-07T23:57:00Z", type: "GBP_BUY",  suiAmount: 752.561,  acqCostGBP: 1992.99, feeGBP: 7.00 },
     ];
-    // ===================================================================
+    // ================================
 
-    // Build a date range that covers all trades for efficient price fetch
-    const tTo = (d)=> Math.floor(new Date(d).getTime()/1000);
-    const minTs = Math.min(...TRADES.map(t=>tTo(t.date))) - 86400;   // pad ±1 day
-    const maxTs = Math.max(...TRADES.map(t=>tTo(t.date))) + 86400;
+    // Build price range for efficiency
+    const toTs = d => Math.floor(new Date(d).getTime()/1000);
+    const minTs = Math.min(...TRADES.map(t=>toTs(t.date))) - 86400;
+    const maxTs = Math.max(...TRADES.map(t=>toTs(t.date))) + 86400;
 
-    // Fetch historical GBP prices (range) for SUI and BTC from CoinGecko
-    async function getRange(id){
+    async function rangeFn(id){
       const url = `https://api.coingecko.com/api/v3/coins/${id}/market_chart/range?vs_currency=gbp&from=${minTs}&to=${maxTs}`;
-      const res = await fetch(url, {cache:"no-store"});
-      if(!res.ok) throw new Error(`Failed price fetch: ${id}`);
+      const res = await fetch(url,{cache:"no-store"});
+      if(!res.ok) throw new Error("Price fetch failed: "+id);
       const data = await res.json();
-      // data.prices: [[ms, price], ...]
-      return (ts)=> {
+      const arr = data.prices || [];
+      return (ts)=>{
         const ms = ts*1000;
-        // find nearest point (binary search would be nicer, but simple scan is fine for short ranges)
-        let best = data.prices[0];
-        let bestDiff = Math.abs(best[0] - ms);
-        for(const p of data.prices){
-          const d = Math.abs(p[0]-ms);
-          if(d < bestDiff){ best = p; bestDiff = d; }
-        }
+        let best = arr[0], bestD = best ? Math.abs(arr[0][0]-ms) : Infinity;
+        for(const p of arr){ const d = Math.abs(p[0]-ms); if(d < bestD){ best=p; bestD=d; } }
         return best ? best[1] : NaN;
       };
     }
 
-    let suiGBPAt, btcGBPAt;
+    let suiAt, btcAt;
     try{
-      [suiGBPAt, btcGBPAt] = await Promise.all([getRange("sui"), getRange("bitcoin")]);
+      [suiAt, btcAt] = await Promise.all([rangeFn("sui"), rangeFn("bitcoin")]);
     }catch(e){
-      console.error(e);
-      alert("Price lookup failed. Please refresh or try again later.");
+      console.error(e); alert("Could not load historical prices. Please refresh.");
       return;
     }
 
-    // Build rows
+    // Build table rows (newest first)
     const tbody = document.querySelector("#purchases tbody");
     const nf0 = new Intl.NumberFormat("en-GB",{maximumFractionDigits:0});
     const nf2 = new Intl.NumberFormat("en-GB",{minimumFractionDigits:2,maximumFractionDigits:2});
 
-    // Newest first
     TRADES.sort((a,b)=> new Date(b.date) - new Date(a.date));
 
     let runningHoldings = 0;
-    const rows = TRADES.map((t, idx) => {
-      const ts = tTo(t.date);
-      const source = t.type === "BTC_SWAP" ? "BTC" : "GBP";
-      const fee = +t.feeGBP || 0;
-      const suiAmt = +t.suiAmount || 0;
+    let totalSui = 0, totalCost = 0;
 
-      let acqCost;   // in GBP
-      if (t.type === "GBP_BUY") {
-        // Prefer explicit acq cost if provided; otherwise price via SUI GBP
-        acqCost = (typeof t.acqCostGBP === "number")
-          ? +t.acqCostGBP + fee
-          : (suiGBPAt(ts) * suiAmt) + fee;
-      } else {
-        // BTC swap → value paid in BTC, translate to GBP on the day
-        if (typeof t.btcAmount === "number") {
-          acqCost = (btcGBPAt(ts) * (+t.btcAmount || 0)) + fee;
-        } else {
-          // If btcAmount unknown, value the SUI received at SUI's GBP price that day
-          acqCost = (suiGBPAt(ts) * suiAmt) + fee;
+    const rows = TRADES.map((t, idx)=>{
+      const ts = toTs(t.date);
+      const suiAmt = +t.suiAmount || 0;
+      const fee = +t.feeGBP || 0;
+
+      let acqCost; // in GBP
+      if(t.type === "GBP_BUY"){
+        acqCost = (typeof t.acqCostGBP === "number") ? (+t.acqCostGBP + fee) : (suiAt(ts)*suiAmt + fee);
+      }else{ // BTC_SWAP
+        if(typeof t.btcAmount === "number"){
+          acqCost = btcAt(ts) * (+t.btcAmount || 0) + fee;
+        }else{
+          acqCost = suiAt(ts) * suiAmt + fee;
         }
       }
 
-      const avgCost = suiAmt > 0 ? (acqCost / suiAmt) : NaN;
+      const avgCost = suiAmt > 0 ? acqCost / suiAmt : NaN;
 
-      // Running holdings: only SUI acquisitions add to holdings (we're not listing sells/deposits here)
+      // running + totals
       runningHoldings += suiAmt;
+      totalSui += suiAmt;
+      totalCost += acqCost;
 
       const count = TRADES.length - idx;
+      const reported = new Date(t.date).toLocaleString("en-GB",{dateStyle:"medium", timeStyle:"short"});
+
       return `
         <tr>
           <td>${count}</td>
-          <td>${escapeHtml(new Date(t.date).toLocaleString("en-GB",{dateStyle:"medium", timeStyle:"short"}))}</td>
-          <td>${source}</td>
+          <td>${escapeHtml(reported)}</td>
           <td class="num">${suiAmt ? nf2.format(suiAmt) : "—"}</td>
           <td class="num">${isFinite(avgCost) ? "£"+nf2.format(avgCost) : "—"}</td>
           <td class="num">£${nf2.format(acqCost)}</td>
@@ -214,9 +239,14 @@
 
     tbody.innerHTML = rows.join("");
 
-    function escapeHtml(s){
-      return String(s).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-    }
+    // Summary band
+    const weightedAvg = totalSui > 0 ? (totalCost / totalSui) : NaN;
+    document.getElementById("sum-sui").textContent = totalSui ? nf2.format(totalSui) : "—";
+    document.getElementById("sum-avg").textContent = isFinite(weightedAvg) ? "£"+nf2.format(weightedAvg) : "—";
+    document.getElementById("sum-cost").textContent = "£"+nf2.format(totalCost);
+    document.getElementById("sum-holdings").textContent = nf0.format(runningHoldings);
+
+    function escapeHtml(s){return String(s).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
   })();
   </script>
 </body>
