@@ -8,7 +8,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-
   <style>
     :root{
       --bg:#f4faff;
@@ -25,60 +24,32 @@
     *{box-sizing:border-box;margin:0;padding:0}
     html{font-size:16px}
     body{
-      background:var(--bg);
-      color:var(--text);
+      background:var(--bg); color:var(--text);
       font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      overflow-x:hidden;
-      position:relative;
+      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+      overflow-x:hidden; position:relative;
     }
 
-    /* Ambient glow background */
+    /* Ambient glow (background only) */
     body::before{
-      content:"";
-      position:fixed;
-      top:-120px; right:-120px;
-      width:520px; height:520px;
-      pointer-events:none;
+      content:""; position:fixed; top:-120px; right:-120px; width:520px; height:520px; pointer-events:none;
       background:
         radial-gradient(40% 40% at 70% 30%, rgba(56,232,255,.65) 0%, rgba(56,232,255,0) 70%),
         radial-gradient(55% 55% at 35% 65%, rgba(106,108,255,.55) 0%, rgba(106,108,255,0) 70%);
-      filter:blur(40px) saturate(120%);
-      opacity:var(--glow-strength);
-      z-index:0;
+      filter:blur(40px) saturate(120%); opacity:var(--glow-strength); z-index:0;
     }
 
     /* Header */
-    .topbar{
-      width:100%;
-      background:var(--topbar-bg);
-      color:var(--topbar-text);
-      position:relative;
-      z-index:1;
-    }
-    .topbar .inner{
-      max-width:1200px;
-      margin:0 auto;
-      padding:12px 24px;
-      display:flex;
-      align-items:center;
-    }
-    .brand{font-weight:700;font-size:1rem;letter-spacing:.2px;white-space:nowrap}
+    .topbar{width:100%; background:var(--topbar-bg); color:var(--topbar-text); position:relative; z-index:1}
+    .topbar .inner{max-width:1200px; margin:0 auto; padding:12px 24px; display:flex; align-items:center}
+    .brand{font-weight:700; font-size:1rem; letter-spacing:.2px; white-space:nowrap}
 
-    /* Layout */
-    .container{
-      max-width:1200px;
-      margin:0 auto;
-      padding:64px 24px;
-      text-align:center;
-      position:relative;
-      z-index:1;
-    }
-    h1{font-size:2rem;font-weight:800;margin-bottom:12px}
-    p.sub{color:var(--muted);font-size:1.125rem;margin-bottom:56px}
+    /* Main */
+    .container{max-width:1200px; margin:0 auto; padding:64px 24px; text-align:center; position:relative; z-index:1}
+    h1{font-size:2rem; font-weight:800; margin-bottom:12px}
+    p.sub{color:var(--muted); font-size:1.125rem; margin-bottom:56px}
 
-    /* Rows */
+    /* Rows (desktop/tablet) */
     .row{
       display:grid;
       grid-template-columns:repeat(3,1fr);
@@ -88,54 +59,55 @@
       margin-bottom:56px;
       position:relative;
     }
-
-    /* Column separators */
+    /* Vertical separators (desktop/tablet) */
     .row::before, .row::after{
       content:"";
-      position:absolute;
-      top:0;
-      bottom:0;
-      width:1px;
-      background:var(--divider);
-      opacity:.8;
+      position:absolute; top:0; bottom:0; width:1px;
+      background:var(--divider); opacity:.8;
     }
-    .row::before{left:33.33%;}
-    .row::after{left:66.66%;}
+    .row::before{left:33.33%}
+    .row::after{left:66.66%}
 
-    .kpi{text-align:center;padding:0 32px}
-    .title{
-      color:var(--muted);
-      font-size:.9rem;
-      font-weight:700;
-      text-transform:uppercase;
-      letter-spacing:.3px;
-      margin-bottom:10px;
-    }
-    .value{
-      font-size:3.25rem;
-      font-weight:800;
-      line-height:1.1;
-      color:var(--sui-blue);
-    }
+    .kpi{padding:0 32px; text-align:center; max-width:360px}
+    .title{color:var(--muted); font-size:.9rem; font-weight:700; text-transform:uppercase; letter-spacing:.3px; margin-bottom:10px}
+    .value{font-size:3.25rem; font-weight:800; line-height:1.1; color:var(--sui-blue)}
 
     /* Meta/footer */
-    .meta{margin-top:48px;display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+    .meta{margin-top:48px; display:flex; gap:12px; flex-wrap:wrap; justify-content:center}
     .chip{
-      display:inline-flex;gap:8px;align-items:center;border:1px solid var(--ring);
-      padding:8px 12px;border-radius:999px;color:var(--muted);font-size:.8rem;
-      background:rgba(255,255,255,0.7);box-shadow:0 0 12px rgba(56,232,255,.15);
-      backdrop-filter:blur(4px)
+      display:inline-flex; gap:8px; align-items:center; border:1px solid var(--ring);
+      padding:8px 12px; border-radius:999px; color:var(--muted); font-size:.8rem;
+      background:rgba(255,255,255,0.7); box-shadow:0 0 12px rgba(56,232,255,.15); backdrop-filter:blur(4px)
     }
-    footer{margin-top:64px;color:var(--muted);font-size:.9rem;text-align:center}
+    footer{margin-top:64px; color:var(--muted); font-size:.9rem; text-align:center}
 
-    @media (max-width:880px){
-      .row{grid-template-columns:repeat(auto-fit,minmax(240px,1fr));}
-      .row::before,.row::after{display:none;}
-      .value{font-size:2.5rem}
+    /* ===== Mobile fixes ===== */
+    @media (max-width: 640px){
+      .container{padding:40px 16px}
+      h1{font-size:1.6rem}
+      p.sub{margin-bottom:32px}
+
+      .row{
+        grid-template-columns:1fr;     /* stack KPIs */
+        gap:0;                         /* gaps handled by borders/margins below */
+        margin-bottom:32px;
+      }
+      .row::before, .row::after{display:none} /* hide vertical separators */
+
+      .kpi{
+        width:100%;
+        max-width:none;
+        padding:18px 4px;              /* even side padding */
+        margin:0;                      /* zero margins for perfect rhythm */
+        border-top:1px solid var(--divider);
+      }
+      .row .kpi:first-child{border-top:none}  /* no border on first in each row */
+
+      .title{margin-bottom:6px; font-size:.85rem}
+      .value{font-size:2.35rem; line-height:1.05}
     }
   </style>
 </head>
-
 <body>
   <header class="topbar">
     <div class="inner"><div class="brand">Kaplan Asset Holdings</div></div>
@@ -151,12 +123,10 @@
         <div class="title">SUI Price (GBP)</div>
         <div class="value" id="sui-price">—</div>
       </div>
-
       <div class="kpi">
         <div class="title">SUI Holdings</div>
         <div class="value" id="sui-holdings">—</div>
       </div>
-
       <div class="kpi">
         <div class="title">SUI NAV (£)</div>
         <div class="value" id="sui-nav">—</div>
@@ -169,12 +139,10 @@
         <div class="title">SUI Gain QTD (tokens)</div>
         <div class="value" id="sui-gain-qtd">—</div>
       </div>
-
       <div class="kpi">
         <div class="title">SUI Gain YTD (tokens)</div>
         <div class="value" id="sui-gain-ytd">—</div>
       </div>
-
       <div class="kpi">
         <div class="title">SUI Gain 2025 (tokens)</div>
         <div class="value" id="sui-gain-2025">—</div>
@@ -194,10 +162,8 @@
     const CFG = {
       locale: "en-GB",
       pricePollEveryMs: 60000,
-
       // Core inputs
-      suiHoldings: 5642,    // total tokens
-
+      suiHoldings: 5642,
       // Token gains (row 2)
       suiGainQTD:   0,
       suiGainYTD:   5642,
@@ -238,10 +204,10 @@
       }
     }
 
-    set("as-of",new Date().toLocaleString(undefined,{dateStyle:"medium",timeStyle:"short"}));
+    set("as-of", new Date().toLocaleString(undefined,{dateStyle:"medium",timeStyle:"short"}));
     renderAll();
     fetchPrice();
-    setInterval(fetchPrice,CFG.pricePollEveryMs);
+    setInterval(fetchPrice, CFG.pricePollEveryMs);
   })();
   </script>
 </body>
