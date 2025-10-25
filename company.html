@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>KAH — Company</title>
+  <meta name="description" content="Kaplan Asset Holdings — Company information, governance, and treasury policy for SUI." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0c0e11;
+      --text:#b8dfff;
+      --muted:#8ba0b8;
+      --sui-blue:#00baff;
+      --divider:#1d2733;
+      --topbar-bg:#11161b;
+      --topbar-text:#e9f8ff;
+      --nav-pill:#141b21;
+      --nav-pill-active:#1f2a33;
+      --glow-strength:.45;
+
+      /* banner palette — subtle SUI gradient */
+      --banner-bg:linear-gradient(90deg,#001b29 0%,#004a68 50%,#00baff 100%);
+      --banner-text:#d7f6ff;
+      --banner-text-hover:#ffffff;
+
+      --card:#0f151b;
+      --card-border:#16202b;
+      --chip-bg:rgba(0,30,45,0.6);
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{font-size:16px}
+    body{
+      background:var(--bg); color:var(--text);
+      font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+      overflow-x:hidden; position:relative;
+    }
+
+    /* Subtle ambient glow */
+    body::before{
+      content:"";position:fixed;top:-180px;right:-180px;width:600px;height:600px;pointer-events:none;
+      background:
+        radial-gradient(40% 40% at 70% 30%, rgba(56,232,255,.22) 0%, rgba(56,232,255,0) 70%),
+        radial-gradient(60% 60% at 30% 70%, rgba(0,128,255,.22) 0%, rgba(0,128,255,0) 70%);
+      filter:blur(80px) saturate(130%);opacity:var(--glow-strength);z-index:0;
+    }
+
+    /* Banner */
+    .banner{
+      width:100%;
+      background:var(--banner-bg);
+      color:var(--banner-text);
+      position:sticky;top:0;z-index:1000;
+      box-shadow:0 4px 20px rgba(0,0,0,.4);
+      border-bottom:1px solid rgba(0,186,255,.15);
+    }
+    .banner .inner{
+      max-width:1200px;margin:0 auto;padding:8px 24px;
+      display:flex;align-items:center;justify-content:flex-end;gap:18px;
+    }
+    .banner a{
+      color:var(--banner-text); text-decoration:none; font-weight:700; text-transform:uppercase;
+      font-size:.85rem; letter-spacing:.05em; opacity:.9; transition:color .2s ease,opacity .2s ease;
+    }
+    .banner a:hover{color:var(--banner-text-hover);opacity:1}
+    .banner .dot{opacity:.5;user-select:none}
+
+    /* Topbar */
+    .topbar{width:100%;background:var(--topbar-bg);color:var(--topbar-text);position:relative;z-index:1}
+    .topbar .inner{max-width:1200px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .brand{font-weight:700;font-size:1rem;letter-spacing:.3px;white-space:nowrap}
+    .nav{display:flex;gap:6px;flex-wrap:wrap}
+    .nav a{
+      color:#a3c7e5;text-decoration:none;font-weight:600;font-size:.9rem;
+      padding:8px 12px;border-radius:999px;background:var(--nav-pill);border:1px solid rgba(255,255,255,.05);transition:all .2s ease;
+    }
+    .nav a:hover{background:var(--nav-pill-active)}
+    .nav a.active{background:#00baff;color:#fff;border-color:transparent}
+
+    /* Content layout */
+    .container{max-width:1000px;margin:0 auto;padding:56px 24px;position:relative;z-index:1}
+    h1{font-size:2rem;font-weight:800;margin-bottom:12px;color:#eaf7ff}
+    p.lead{color:#a7c5dd;font-size:1.1rem;margin-bottom:28px}
+    .section{margin:28px 0;padding:24px;border:1px solid var(--card-border);background:var(--card);border-radius:14px}
+    .section + .section{margin-top:18px}
+    h2{font-size:1.1rem;letter-spacing:.04em;text-transform:uppercase;color:#9cc9e8;margin-bottom:12px}
+    p,li{color:var(--text);line-height:1.65}
+    .muted{color:var(--muted)}
+    ul{margin:8px 0 0 18px}
+    .chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+    .chip{background:var(--chip-bg);border:1px solid rgba(0,186,255,.25);color:#a9c3da;padding:6px 10px;border-radius:999px;font-size:.85rem}
+    a.link{color:#7fd9ff;text-decoration:none}
+    a.link:hover{text-decoration:underline}
+
+    footer{margin:48px 0 12px;text-align:center;color:#7d97b2;font-size:.9rem}
+
+    @media (max-width:640px){
+      .container{padding:40px 16px}
+      h1{font-size:1.6rem}
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Banner -->
+  <div class="banner">
+    <div class="inner">
+      <a href="index.html">analytics</a>
+      <span class="dot">•</span>
+      <a href="company.html">company</a>
+    </div>
+  </div>
+
+  <!-- Topbar -->
+  <header class="topbar">
+    <div class="inner">
+      <div class="brand">Kaplan Asset Holdings</div>
+      <nav class="nav">
+        <a href="index.html">Overview</a>
+        <a href="purchases.html">Purchases</a>
+        <a class="active" href="company.html">Company</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <h1>Company</h1>
+    <p class="lead">Kaplan Asset Holdings (“KAH”) is a research-driven treasury focused on acquiring and holding <strong>Sui (SUI)</strong> for long-term corporate strategy and liquidity management.</p>
+
+    <section class="section">
+      <h2>Overview</h2>
+      <p>KAH manages treasury capital with a mandate to hold SUI as a strategic corporate reserve. We operate with institutional controls, independent oversight, and transparent reporting.</p>
+      <div class="chips">
+        <span class="chip">Domicile: UK</span>
+        <span class="chip">Base currency: GBP</span>
+        <span class="chip">Reporting: monthly</span>
+        <span class="chip">Focus: Sui ecosystem</span>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Corporate Strategy</h2>
+      <ul>
+        <li><strong>Core position in SUI.</strong> Build and maintain a long-duration allocation to SUI as digital treasury reserve.</li>
+        <li><strong>Disciplined accumulation.</strong> Add SUI opportunistically over cycles while managing GBP cash runway.</li>
+        <li><strong>Operational simplicity.</strong> Minimise protocol risk, third-party exposure, and unnecessary complexity.</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>Treasury Policy</h2>
+      <ul>
+        <li><strong>Holding policy.</strong> SUI held in segregated wallets with documented signing procedures.</li>
+        <li><strong>Pricing policy.</strong> GBP functional currency. Purchases booked at GBP consideration paid; where applicable, fair-valued using reliable market data.</li>
+        <li><strong>Liquidity.</strong> Maintain sufficient GBP to meet 12 months of operating expenses.</li>
+        <li><strong>Counterparties.</strong> Use reputable exchanges/custodians with robust compliance and security standards.</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>Risk Management</h2>
+      <ul>
+        <li><strong>Market risk.</strong> Exposure primarily to SUI price volatility vs GBP.</li>
+        <li><strong>Custody risk.</strong> Multi-sig, hardware key management, and restricted withdrawal policies.</li>
+        <li><strong>Operational risk.</strong> Change control for wallets, vendors, and data sources; periodic review.</li>
+        <li><strong>Compliance.</strong> KYB/AML with exchanges and service providers; audit trail retention.</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>Accounting</h2>
+      <p>For internal management reporting, SUI holdings are presented in GBP at period-end fair value with separate tracking of historical acquisition cost and weighted average unit cost. Realised gains/losses are recognised on disposal; unrealised remeasurement is disclosed for transparency.</p>
+    </section>
+
+    <section class="section">
+      <h2>Reporting</h2>
+      <ul>
+        <li><strong>Overview dashboard.</strong> Live SUI price, holdings, and NAV in GBP.</li>
+        <li><strong>Purchases ledger.</strong> Time-stamped SUI acquisitions with weighted average cost and cumulative holdings.</li>
+      </ul>
+      <p>See <a class="link" href="index.html">Overview</a> and <a class="link" href="purchases.html">Purchases</a>.</p>
+    </section>
+
+    <section class="section">
+      <h2>Contact</h2>
+      <p>Email: <a class="link" href="mailto:info@kaplanassetholdings.com">info@kaplanassetholdings.com</a></p>
+    </section>
+
+    <footer>© <span id="y"></span> Kaplan Asset Holdings. All rights reserved.</footer>
+  </main>
+
+  <script>
+    // footer year
+    document.getElementById("y").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
