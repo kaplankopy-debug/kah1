@@ -1,4 +1,46 @@
-<!-- header.html -->
+<!-- Shared header: banner + topbar (text-only KAH logo) -->
+<style>
+  /* Header-only styles (uses the CSS variables defined in each page) */
+  .banner{
+    width:100%; background:var(--banner-bg); color:var(--banner-text);
+    position:sticky; top:0; z-index:1000;
+    box-shadow:0 4px 20px rgba(0,0,0,.4);
+    border-bottom:1px solid rgba(0,186,255,.15);
+  }
+  .banner .inner{
+    max-width:1200px; margin:0 auto; padding:8px 24px;
+    display:flex; align-items:center; justify-content:center; gap:18px;
+  }
+  .banner a{
+    color:var(--banner-text); text-decoration:none; font-weight:700;
+    text-transform:uppercase; letter-spacing:.05em; font-size:.85rem; opacity:.9;
+    transition:color .2s ease, opacity .2s ease;
+  }
+  .banner a:hover{ color:var(--banner-text-hover); opacity:1; }
+  .banner .dot{ opacity:.5; user-select:none; }
+
+  .topbar{ width:100%; background:var(--topbar-bg); color:var(--topbar-text); position:relative; z-index:1; }
+  .topbar .inner{
+    max-width:1200px; margin:0 auto; padding:12px 24px;
+    display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:12px;
+  }
+  .logo{
+    justify-self:start; text-decoration:none; color:#fff;
+    font-weight:800; letter-spacing:1px; font-size:1.5rem;
+  }
+  .logo:hover{ color:var(--sui-blue); transition:.2s; }
+
+  .nav{ justify-self:center; display:flex; gap:6px; flex-wrap:wrap; }
+  .nav a{
+    color:#a3c7e5; text-decoration:none; font-weight:600; font-size:.9rem;
+    padding:8px 12px; border-radius:999px; background:var(--nav-pill);
+    border:1px solid rgba(255,255,255,.06); transition:all .2s ease;
+  }
+  .nav a:hover{ background:var(--nav-pill-active); }
+  .nav a.active{ background:#00baff; color:#fff; border-color:transparent; }
+  .spacer{ justify-self:end; }
+</style>
+
 <!-- Top gradient banner -->
 <div class="banner">
   <div class="inner">
@@ -8,7 +50,7 @@
   </div>
 </div>
 
-<!-- Main topbar -->
+<!-- Topbar with centered nav and text-only KAH logo -->
 <header class="topbar">
   <div class="inner">
     <a class="logo" href="index.html" aria-label="KAH home">KAH</a>
