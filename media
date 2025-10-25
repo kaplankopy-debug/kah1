@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>KAH — Media</title>
+<meta name="description" content="Latest Sui-related media and news from X, CoinDesk, and more." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0c0e11; --text:#b8dfff; --muted:#8ba0b8; --sui-blue:#00baff;
+    --divider:#1d2733; --topbar-bg:#11161b; --topbar-text:#e9f8ff;
+    --nav-pill:#141b21; --nav-pill-active:#1f2a33; --glow-strength:.45;
+    --banner-bg:linear-gradient(90deg,#001b29 0%,#004a68 50%,#00baff 100%);
+    --banner-text:#d7f6ff; --banner-text-hover:#ffffff;
+    --card-bg:#0f151b; --card-bg-alt:#0d141a; --card-border:#14202c;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--bg); color:var(--text);
+    font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; overflow-x:hidden; position:relative;
+  }
+  body::before{
+    content:""; position:fixed; top:-180px; right:-180px; width:600px; height:600px; pointer-events:none;
+    background:
+      radial-gradient(40% 40% at 70% 30%, rgba(56,232,255,.22) 0%, rgba(56,232,255,0) 70%),
+      radial-gradient(60% 60% at 30% 70%, rgba(0,128,255,.22) 0%, rgba(0,128,255,0) 70%);
+    filter:blur(80px) saturate(130%); opacity:.45; z-index:0;
+  }
+
+  .container{max-width:1200px; margin:0 auto; padding:48px 24px; position:relative; z-index:1;}
+  h1{font-size:1.9rem; font-weight:800; color:#eaf7ff; margin-bottom:10px}
+  p.sub{color:var(--muted); margin-bottom:28px;}
+
+  .grid{
+    display:grid; grid-template-columns:2fr 1.2fr; gap:32px; align-items:start;
+  }
+
+  /* Articles list */
+  .list{
+    display:grid; grid-template-columns:1fr 1fr; gap:16px;
+  }
+  @media (max-width:1000px){
+    .grid{grid-template-columns:1fr}
+    .list{grid-template-columns:1fr}
+  }
+
+  .card{
+    background:var(--card-bg); border:1px solid var(--card-border);
+    border-radius:14px; padding:16px;
+    display:flex; flex-direction:column; gap:10px;
+    box-shadow:0 12px 32px rgba(0,0,0,.25);
+  }
+  .card:hover{ border-color:#1c2d3d; }
+  .meta{display:flex; gap:8px; align-items:center; color:#9ab6cf; font-size:.82rem}
+  .dot{opacity:.6}
+  .title{
+    color:#e7f6ff; font-weight:700; line-height:1.35; font-size:1rem; text-decoration:none;
+  }
+  .title:hover{ color:#79dcff; }
+  .source{color:#8ebbd3; font-weight:700; font-size:.82rem}
+  .time{opacity:.8}
+  .desc{color:#9fb6cb; font-size:.9rem}
+
+  /* X column */
+  .xbox{
+    background:var(--card-bg-alt);
+    border:1px solid var(--card-border);
+    border-radius:14px; padding:12px 12px 0;
+    box-shadow:0 12px 32px rgba(0,0,0,.25);
+  }
+  .xbox h2{font-size:1rem; color:#cfeafe; margin:4px 8px 12px; font-weight:800; text-transform:uppercase; letter-spacing:.04em}
+</style>
+</head>
+<body>
+  <!-- Shared header mount -->
+  <div id="site-header"></div>
+  <script>
+    fetch('header.html').then(r=>r.text()).then(h=>{document.getElementById('site-header').innerHTML=h});
+  </script>
+
+  <div class="container">
+    <h1>Media & News</h1>
+    <p class="sub">Curated Sui headlines from CoinDesk, Sui Blog, Google News, plus a live X.com feed.</p>
+
+    <div class="grid">
+      <!-- Left: Articles -->
+      <div>
+        <div id="articles" class="list" aria-live="polite"></div>
+      </div>
+
+      <!-- Right: X.com live -->
+      <aside class="xbox">
+        <h2>Live from X (Sui / $SUI)</h2>
+        <a class="twitter-timeline"
+           data-theme="dark"
+           data-chrome="noheader nofooter transparent"
+           href="https://twitter.com/search?q=(Sui%20OR%20%24SUI)%20lang%3Aen&f=live">
+          Tweets about Sui
+        </a>
+      </aside>
+    </div>
+  </div>
+
+  <!-- X widgets -->
+  <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+  <!-- Aggregator -->
+  <script>
+  (function(){
+    // Feeds (RSS) → converted via rss2json to bypass CORS.
+    const FEEDS = [
+      // Google News RSS for Sui
+      'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent('https://news.google.com/rss/search?q=Sui%20blockchain%20OR%20%24SUI&hl=en-GB&gl=GB&ceid=GB:en'),
+      // CoinDesk (general) – we’ll filter for "Sui"
+      'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent('https://www.coindesk.com/arc/outboundfeeds/rss/'),
+      // Sui blog
+      'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent('https://blog.sui.io/feed/')
+    ];
+
+    const el = document.getElementById('articles');
+    const MAX_ITEMS = 20;
+
+    const timeAgo = (d) => {
+      const diff = (Date.now() - new Date(d).getTime())/1000;
+      const t = (n,u)=>`${Math.floor(n)} ${u}${Math.floor(n)>1?'s':''} ago`;
+      if(diff<60) return t(diff,'sec');
+      if(diff<3600) return t(diff/60,'min');
+      if(diff<86400) return t(diff/3600,'hr');
+      return new Date(d).toLocaleDateString('en-GB',{dateStyle:'medium'});
+    };
+
+    function clean(text){
+      return (text || '').replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim();
+    }
+
+    function normItem(item, source){
+      return {
+        title: clean(item.title),
+        link: item.link || item.guid || item.url,
+        pubDate: item.pubDate || item.published || item.date || item.created || Date.now(),
+        description: clean(item.description || item.content || ''),
+        source
+      };
+    }
+
+    async function loadFeeds(){
+      const all = [];
+      const results = await Promise.allSettled(FEEDS.map(u=>fetch(u,{cache:'no-store'}).then(r=>r.json())));
+      results.forEach((res, idx)=>{
+        if(res.status!=='fulfilled') return;
+        const feed = res.value;
+        const src = feed?.feed?.title || (idx===0?'Google News':'Feed');
+        (feed?.items || []).forEach(it => {
+          all.push(normItem(it, src));
+        });
+      });
+
+      // Filter for Sui
+      const filtered = all.filter(x=>{
+        const t = (x.title + ' ' + x.description).toLowerCase();
+        return t.includes('sui ');
+      });
+
+      // Dedupe by link/title
+      const seen = new Set();
+      const uniq = [];
+      filtered.forEach(x=>{
+        const key = (x.link || x.title).toLowerCase();
+        if(!seen.has(key)){ seen.add(key); uniq.push(x); }
+      });
+
+      // Sort newest first
+      uniq.sort((a,b)=> new Date(b.pubDate) - new Date(a.pubDate));
+
+      // Render
+      const items = uniq.slice(0, MAX_ITEMS);
+      if(items.length===0){
+        el.innerHTML = '<div class="card"><div class="desc">No Sui headlines found right now. Try again shortly.</div></div>';
+        return;
+      }
+      el.innerHTML = items.map(x=>`
+        <article class="card">
+          <div class="meta">
+            <span class="source">${x.source || 'Source'}</span>
+            <span class="dot">•</span>
+            <span class="time">${timeAgo(x.pubDate)}</span>
+          </div>
+          <a class="title" href="${x.link}" target="_blank" rel="noopener noreferrer">${x.title}</a>
+          ${x.description ? `<p class="desc">${x.description}</p>` : ''}
+        </article>
+      `).join('');
+    }
+
+    loadFeeds().catch(err=>{
+      console.error(err);
+      el.innerHTML = '<div class="card"><div class="desc">Could not load feeds right now.</div></div>';
+    });
+  })();
+  </script>
+</body>
+</html>
