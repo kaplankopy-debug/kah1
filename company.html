@@ -74,7 +74,7 @@
 
     /* Logo */
     .logo { display:flex; align-items:center; text-decoration:none; }
-    .logo svg { height:32px; width:auto; display:block; }
+    .logo svg { height:38px; width:auto; display:block; }
 
     /* Nav */
     .nav{display:flex;gap:6px;flex-wrap:wrap}
@@ -129,7 +129,7 @@
     </div>
   </div>
 
-  <!-- Topbar with New Logo -->
+  <!-- Topbar with Enhanced Logo -->
   <header class="topbar">
     <div class="inner">
       <a class="logo" href="index.html" aria-label="KAH home">
@@ -144,6 +144,11 @@
               <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
             </filter>
           </defs>
+
+          <!-- Thin top & bottom lines -->
+          <rect x="-2" y="5" width="120" height="1.2" fill="url(#kahBlue)" opacity="0.9" filter="url(#softGlow)" />
+          <rect x="-2" y="50" width="120" height="1.2" fill="url(#kahBlue)" opacity="0.9" filter="url(#softGlow)" />
+
           <!-- Wordmark -->
           <g fill="#FFFFFF" font-family="Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif"
              font-size="42" font-weight="800" letter-spacing="1">
@@ -151,6 +156,7 @@
             <text x="33" y="41">A</text>
             <text x="68" y="41">H</text>
           </g>
+
           <!-- Vertical stacked arrows -->
           <g transform="translate(118,4)" fill="url(#kahBlue)" filter="url(#softGlow)">
             <path d="M0 18 L14 4 L28 18 L22 24 L14 16 L6 24 Z"/>
