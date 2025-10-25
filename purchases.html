@@ -15,8 +15,7 @@
       --topbar-bg:#0b2a45; --topbar-text:#ffffff;
       --glow-strength:0.55; --divider:#d5e7f2;
       --nav-pill:#073055; --nav-pill-active:#0d3c68;
-      --row-alt:#f1f7fb; --card:#ffffff;
-      --summary-bg:#e7f6ff;
+      --row-alt:#f1f7fb; --card:#ffffff; --summary-bg:#e7f6ff;
     }
     *{box-sizing:border-box;margin:0;padding:0}
     body{
@@ -73,7 +72,6 @@
       border-bottom:2px solid var(--divider);
     }
     .summary-row td .num{color:var(--sui-blue)}
-
     .num{color:var(--sui-blue); font-weight:800}
 
     @media (max-width:720px){
@@ -116,22 +114,50 @@
 
   <script>
   (async function(){
-    // ====== EDIT THESE TRADES ======
-    // type: 'GBP_BUY' (SUI/GBP) or 'BTC_SWAP' (SUI/BTC)
-    // Required: date, type, suiAmount
-    // Optional for GBP_BUY: acqCostGBP (preferred), feeGBP
-    // Optional for BTC_SWAP: btcAmount (if known), feeGBP
-    const TRADES = [
-      { date: "2025-10-22T11:02:00Z", type: "GBP_BUY",  suiAmount: 823.8576, acqCostGBP: 1500.05, feeGBP: 5.27 },
-      { date: "2025-10-21T02:53:00Z", type: "BTC_SWAP", suiAmount: 1.0512,   feeGBP: 0.00 },                      // no btcAmount → priced via SUI GBP
-      { date: "2025-10-20T12:12:00Z", type: "GBP_BUY",  suiAmount: 1290.562, acqCostGBP: 2536.55, feeGBP: 8.91 },
-      { date: "2025-10-10T22:45:00Z", type: "BTC_SWAP", suiAmount: 310.9235, btcAmount: 0.00337, feeGBP: 2.05 }, // if you know BTC used
-      { date: "2025-10-07T23:57:00Z", type: "GBP_BUY",  suiAmount: 752.561,  acqCostGBP: 1992.99, feeGBP: 7.00 },
+    /* ===========================================================
+     * SUPER-SIMPLE INPUT — EDIT THIS ONLY
+     * Each row: ["YYYY-MM-DD HH:MM", SUI_AMOUNT, GBP_TOTAL(or ""), BTC_USED(or "")]
+     * Rules:
+     *  - If GBP_TOTAL is provided, it will be used directly (preferred).
+     *  - Else if BTC_USED is provided, value the lot as BTC_USED × BTC/GBP at that time.
+     *  - Else (both blank), value the lot as SUI_AMOUNT × SUI/GBP at that time.
+     *  - Fees: if you want to include them, add them into GBP_TOTAL (simplest).
+     * ===========================================================
+    */
+    const LOTS = [
+      ["2025-10-22 11:02",  823.8576, 1500.05,   ""     ],
+      ["2025-10-21 02:53",    1.0512, "",        ""     ], // no GBP/BTC → use SUI GBP at timestamp
+      ["2025-10-20 12:12", 1290.562,  2536.55,   ""     ],
+      ["2025-10-10 22:45",  310.9235, "",        0.00337], // BTC swap → use BTC price × 0.00337
+      ["2025-10-07 23:57",  752.561,  1992.99,   ""     ],
     ];
-    // ================================
+    /* ===========================================================
+     * DO NOT EDIT BELOW
+     * ===========================================================
+    */
 
-    // Build price range for efficiency
+    // Helpers
+    const toISO = (s)=>{
+      const [d,t="00:00"] = s.trim().split(" ");
+      const [Y,M,D] = d.split("-").map(Number);
+      const [h,m]   = t.split(":").map(Number);
+      const dt = new Date(Y,(M||1)-1,D||1,h||0,m||0);
+      return dt.toISOString();
+    };
     const toTs = d => Math.floor(new Date(d).getTime()/1000);
+
+    // Convert LOTS → internal TRADES format
+    const TRADES = LOTS.map(([dateStr, suiAmount, gbpTotal, btcAmount])=>{
+      const hasGBP = gbpTotal !== "" && gbpTotal != null;
+      const hasBTC = btcAmount !== "" && btcAmount != null;
+      return hasGBP
+        ? { date: toISO(dateStr), type:"GBP_BUY",  suiAmount:+suiAmount, acqCostGBP:+gbpTotal }
+        : hasBTC
+          ? { date: toISO(dateStr), type:"BTC_SWAP", suiAmount:+suiAmount, btcAmount:+btcAmount }
+          : { date: toISO(dateStr), type:"BTC_SWAP", suiAmount:+suiAmount }; // fallback → price by SUI
+    });
+
+    // Build price range once
     const minTs = Math.min(...TRADES.map(t=>toTs(t.date))) - 86400;
     const maxTs = Math.max(...TRADES.map(t=>toTs(t.date))) + 86400;
 
@@ -157,10 +183,9 @@
       return;
     }
 
-    // Newest first
+    // Build table rows (newest first)
     TRADES.sort((a,b)=> new Date(b.date) - new Date(a.date));
 
-    // Compute rows + totals
     const nf0 = new Intl.NumberFormat("en-GB",{maximumFractionDigits:0});
     const nf2 = new Intl.NumberFormat("en-GB",{minimumFractionDigits:2,maximumFractionDigits:2});
     const tbody = document.querySelector("#purchases tbody");
@@ -171,16 +196,16 @@
     const detailRows = TRADES.map((t, idx)=>{
       const ts = toTs(t.date);
       const suiAmt = +t.suiAmount || 0;
-      const fee = +t.feeGBP || 0;
 
-      let acqCost; // in GBP
+      // Determine acquisition cost in GBP
+      let acqCost;
       if(t.type === "GBP_BUY"){
-        acqCost = (typeof t.acqCostGBP === "number") ? (+t.acqCostGBP + fee) : (suiAt(ts) * suiAmt + fee);
+        acqCost = (typeof t.acqCostGBP === "number") ? (+t.acqCostGBP) : (suiAt(ts)*suiAmt);
       }else{ // BTC_SWAP
         if(typeof t.btcAmount === "number"){
-          acqCost = btcAt(ts) * (+t.btcAmount || 0) + fee;
+          acqCost = btcAt(ts) * (+t.btcAmount || 0);
         }else{
-          acqCost = suiAt(ts) * suiAmt + fee;
+          acqCost = suiAt(ts) * suiAmt;
         }
       }
 
@@ -205,7 +230,7 @@
       `;
     });
 
-    // Summary (as first row under headings)
+    // Summary row (first row under headings)
     const weightedAvg = totalSui > 0 ? (totalCost / totalSui) : NaN;
     const summaryRow = `
       <tr class="summary-row">
