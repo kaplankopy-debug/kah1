@@ -1,73 +1,168 @@
-<script>
-(function(){
-  /* ====== SIMPLE INPUT (edit only this) ====== */
-  const LOTS = [
-    ["2025-10-22", 73.27, 140.50],
-    ["2025-10-21", 584.99, 584.99],
-    ["2025-10-20", 221.61, 514.77],
-    ["2025-10-10", 253.76, 253.76],
-    ["2025-10-07", 752.56, 1992.99],
-  ];
-  /* =========================================== */
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>xyz — Sui Purchases</title>
+  <meta name="description" content="Sui purchases — Kaplan Asset Holdings." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#f4faff; --text:#003e6b; --muted:#4d6a88;
+      --sui-blue:#00baff; --divider:#d5e7f2;
+      --topbar-bg:#0b2a45; --topbar-text:#ffffff;
+      --row-alt:#f1f7fb; --summary-bg:#e7f6ff;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      background:var(--bg); color:var(--text);
+      font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+      overflow-x:hidden;
+    }
+    .topbar{width:100%;background:var(--topbar-bg);color:var(--topbar-text)}
+    .topbar .inner{max-width:1200px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;justify-content:space-between}
+    .brand{font-weight:700;font-size:1rem}
+    .nav{display:flex;gap:8px}
+    .nav a{
+      color:#d8e7f7;text-decoration:none;font-weight:600;font-size:.9rem;
+      padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.1)
+    }
+    .nav a.active{background:#128dd6;color:#fff}
 
-  const nf0 = new Intl.NumberFormat("en-GB",{maximumFractionDigits:0});
-  const nf2 = new Intl.NumberFormat("en-GB",{minimumFractionDigits:2,maximumFractionDigits:2});
-  const tbody = document.querySelector("#purchases tbody");
+    .container{max-width:1200px;margin:0 auto;padding:48px 24px}
+    h1{font-size:1.6rem;font-weight:800;margin-bottom:10px}
+    p.sub{color:var(--muted);margin-bottom:20px}
 
-  // sort oldest first to calculate cumulative correctly
-  const chronological = LOTS.slice().sort((a,b)=> new Date(a[0]) - new Date(b[0]));
+    .table-wrap{width:100%;overflow:auto;border:1px solid var(--divider);border-radius:12px;background:#fff;box-shadow:0 6px 20px rgba(0,0,0,.05)}
+    table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+    thead th{
+      text-align:left;font-size:.85rem;color:var(--muted);font-weight:700;
+      padding:14px 16px;background:#eef6fb;border-bottom:1px solid var(--divider)
+    }
+    tbody td{
+      padding:14px 16px;border-bottom:1px solid var(--divider);
+      white-space:nowrap;vertical-align:middle
+    }
+    tbody tr:nth-child(odd){background:var(--row-alt)}
+    tbody tr:last-child td{border-bottom:none}
 
-  let runningHoldings = 0;
-  let totalSui = 0, totalCost = 0;
-  const calculated = [];
+    .summary-row td{background:var(--summary-bg);font-weight:800;color:var(--text);border-bottom:2px solid var(--divider)}
+    .summary-row .num{color:var(--sui-blue)}
+    .num{color:var(--sui-blue);font-weight:800}
 
-  // build holdings correctly in chronological order
-  chronological.forEach(row=>{
-    const [dateStr, suiAmount, acqCost] = row;
-    runningHoldings += suiAmount;
-    totalSui += suiAmount;
-    totalCost += acqCost;
-    calculated.push({
-      date: dateStr,
-      suiAmount,
-      acqCost,
-      avgCost: acqCost / suiAmount,
-      holdings: runningHoldings
+    @media(max-width:720px){
+      thead th,tbody td{padding:12px}
+      .container{padding:32px 16px}
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="inner">
+      <div class="brand">Kaplan Asset Holdings</div>
+      <nav class="nav">
+        <a href="index.html">Overview</a>
+        <a class="active" href="purchases.html">Purchases</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container">
+    <h1>Purchases</h1>
+    <p class="sub">All SUI purchases in GBP, with weighted averages and cumulative holdings.</p>
+
+    <div class="table-wrap">
+      <table id="purchases">
+        <thead>
+          <tr>
+            <th>Count</th>
+            <th>Reported</th>
+            <th>SUI Acquired</th>
+            <th>Avg SUI Cost (GBP)</th>
+            <th>Acq Cost (£)</th>
+            <th>SUI Holdings</th>
+          </tr>
+        </thead>
+        <tbody><!-- summary + rows go here --></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    /* ============= EDIT THIS ONLY ============= */
+    // Each row: ["YYYY-MM-DD", SUI_AMOUNT, GBP_TOTAL]
+    const LOTS = [
+      ["2025-10-22", 823.8576, 1500.05],
+      ["2025-10-21",   1.0512,    2.02],
+      ["2025-10-20", 1290.562,  2536.55],
+      ["2025-10-10", 310.9235,   584.99],
+      ["2025-10-07", 752.561,  1992.99],
+    ];
+    /* ========================================= */
+
+    const tbody = document.querySelector("#purchases tbody");
+    if(!tbody){ return; }
+
+    const nf0 = new Intl.NumberFormat("en-GB",{maximumFractionDigits:0});
+    const nf2 = new Intl.NumberFormat("en-GB",{minimumFractionDigits:2,maximumFractionDigits:2});
+
+    // 1) Sort oldest→newest to compute cumulative holdings correctly
+    const chronological = LOTS.slice().sort((a,b)=> new Date(a[0]) - new Date(b[0]));
+
+    let runningHoldings = 0;
+    let totalSui = 0, totalCost = 0;
+    const computed = [];
+
+    chronological.forEach(([dateStr, suiAmount, acqCost])=>{
+      const avgCost = suiAmount > 0 ? acqCost / suiAmount : 0;
+      runningHoldings += suiAmount;
+      totalSui += suiAmount;
+      totalCost += acqCost;
+      computed.push({
+        date: dateStr,
+        suiAmount, acqCost, avgCost,
+        holdings: runningHoldings
+      });
     });
-  });
 
-  // now display newest first (for presentation)
-  const display = calculated.slice().reverse();
-  const weightedAvg = totalSui > 0 ? (totalCost / totalSui) : NaN;
+    // 2) Display newest first
+    const rows = computed.slice().reverse();
 
-  // summary row (averages + totals)
-  const summaryRow = `
-    <tr class="summary-row">
-      <td>—</td>
-      <td>Summary</td>
-      <td><span class="num">${nf2.format(totalSui)}</span></td>
-      <td><span class="num">£${nf2.format(weightedAvg)}</span></td>
-      <td><span class="num">£${nf2.format(totalCost)}</span></td>
-      <td><span class="num">${nf0.format(runningHoldings)}</span></td>
-    </tr>
-  `;
-
-  // detail rows
-  const detailRows = display.map((t, idx)=>{
-    const count = display.length - idx;
-    const reported = new Date(t.date).toLocaleDateString("en-GB",{dateStyle:"medium"});
-    return `
-      <tr>
-        <td>${count}</td>
-        <td>${reported}</td>
-        <td class="num">${nf2.format(t.suiAmount)}</td>
-        <td class="num">£${nf2.format(t.avgCost)}</td>
-        <td class="num">£${nf2.format(t.acqCost)}</td>
-        <td class="num">${nf0.format(t.holdings)}</td>
+    // Summary (weighted averages + totals)
+    const weightedAvg = totalSui > 0 ? totalCost / totalSui : 0;
+    const summary = `
+      <tr class="summary-row">
+        <td>—</td>
+        <td>Summary</td>
+        <td class="num">${nf2.format(totalSui)}</td>
+        <td class="num">£${nf2.format(weightedAvg)}</td>
+        <td class="num">£${nf2.format(totalCost)}</td>
+        <td class="num">${nf0.format(runningHoldings)}</td>
       </tr>
     `;
-  });
 
-  tbody.innerHTML = summaryRow + detailRows.join("");
-})();
-</script>
+    // Detail rows
+    const detail = rows.map((r, i)=>{
+      const count = rows.length - i;
+      const reported = new Date(r.date).toLocaleDateString("en-GB",{dateStyle:"medium"});
+      return `
+        <tr>
+          <td>${count}</td>
+          <td>${reported}</td>
+          <td class="num">${nf2.format(r.suiAmount)}</td>
+          <td class="num">£${nf2.format(r.avgCost)}</td>
+          <td class="num">£${nf2.format(r.acqCost)}</td>
+          <td class="num">${nf0.format(r.holdings)}</td>
+        </tr>
+      `;
+    }).join("");
+
+    tbody.innerHTML = summary + detail;
+  })();
+  </script>
+</body>
+</html>
