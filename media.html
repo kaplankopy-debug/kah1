@@ -201,5 +201,14 @@
     });
   })();
   </script>
+  <div id="site-footer"></div>
+<script>
+  // Use a root-relative path if your site is under /kah1/
+  fetch('/kah1/footer.html')     // <- if your project is kaplankopy-debug.github.io/kah1
+  // fetch('footer.html')        // <- use this if your Pages root is the repo root
+    .then(r => r.text())
+    .then(html => { document.getElementById('site-footer').innerHTML = html; })
+    .catch(console.error);
+</script>
 </body>
 </html>
