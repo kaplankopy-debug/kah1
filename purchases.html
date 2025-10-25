@@ -11,70 +11,50 @@
   <style>
     :root{
       --bg:#f4faff; --text:#003e6b; --muted:#4d6a88;
-      --sui-blue:#00baff; --ring:rgba(0,186,255,.25);
+      --sui-blue:#00baff; --divider:#d5e7f2;
       --topbar-bg:#0b2a45; --topbar-text:#ffffff;
-      --glow-strength:0.55; --divider:#d5e7f2;
-      --nav-pill:#073055; --nav-pill-active:#0d3c68;
-      --row-alt:#f1f7fb; --card:#ffffff; --summary-bg:#e7f6ff;
+      --row-alt:#f1f7fb; --summary-bg:#e7f6ff;
     }
+
     *{box-sizing:border-box;margin:0;padding:0}
     body{
       background:var(--bg); color:var(--text);
       font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
       -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
-      position:relative; overflow-x:hidden;
+      overflow-x:hidden;
     }
 
-    /* Ambient glow */
-    body::before{
-      content:""; position:fixed; top:-120px; right:-120px; width:520px; height:520px; pointer-events:none;
-      background:
-        radial-gradient(40% 40% at 70% 30%, rgba(56,232,255,.65) 0%, rgba(56,232,255,0) 70%),
-        radial-gradient(55% 55% at 35% 65%, rgba(106,108,255,.55) 0%, rgba(106,108,255,0) 70%);
-      filter:blur(40px) saturate(120%); opacity:var(--glow-strength); z-index:0;
-    }
-
-    /* Header + Nav */
-    .topbar{width:100%; background:var(--topbar-bg); color:var(--topbar-text); position:relative; z-index:1}
-    .topbar .inner{max-width:1200px; margin:0 auto; padding:12px 24px; display:flex; align-items:center; justify-content:space-between; gap:12px}
-    .brand{font-weight:700; font-size:1rem; letter-spacing:.2px}
-    .nav{display:flex; gap:6px; flex-wrap:wrap}
+    .topbar{width:100%;background:var(--topbar-bg);color:var(--topbar-text)}
+    .topbar .inner{max-width:1200px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;justify-content:space-between}
+    .brand{font-weight:700;font-size:1rem}
+    .nav{display:flex;gap:8px}
     .nav a{
-      color:#d8e7f7; text-decoration:none; font-weight:600; font-size:.9rem;
-      padding:8px 12px; border-radius:999px; background:var(--nav-pill); border:1px solid rgba(255,255,255,.08)
+      color:#d8e7f7;text-decoration:none;font-weight:600;font-size:.9rem;
+      padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.1)
     }
-    .nav a:hover{background:var(--nav-pill-active)}
-    .nav a.active{background:#128dd6; border-color:transparent; color:#fff}
+    .nav a.active{background:#128dd6;color:#fff}
 
-    /* Page */
-    .container{max-width:1200px; margin:0 auto; padding:48px 24px}
-    h1{font-size:1.6rem; font-weight:800; margin-bottom:10px}
-    p.sub{color:var(--muted); margin-bottom:20px}
+    .container{max-width:1200px;margin:0 auto;padding:48px 24px}
+    h1{font-size:1.6rem;font-weight:800;margin-bottom:10px}
+    p.sub{color:var(--muted);margin-bottom:20px}
 
-    /* Table */
-    .table-wrap{width:100%; overflow:auto; border:1px solid var(--divider); border-radius:12px; background:#fff; box-shadow:0 6px 20px rgba(0,0,0,.05)}
-    table{width:100%; border-collapse:collapse; font-variant-numeric:tabular-nums}
+    .table-wrap{width:100%;overflow:auto;border:1px solid var(--divider);border-radius:12px;background:#fff;box-shadow:0 6px 20px rgba(0,0,0,.05)}
+    table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
     thead th{
-      text-align:left; font-size:.85rem; letter-spacing:.02em; color:var(--muted); font-weight:700;
-      padding:14px 16px; background:#eef6fb; border-bottom:1px solid var(--divider); white-space:nowrap
+      text-align:left;font-size:.85rem;color:var(--muted);font-weight:700;
+      padding:14px 16px;background:#eef6fb;border-bottom:1px solid var(--divider)
     }
     tbody td{
-      padding:14px 16px; border-bottom:1px solid var(--divider); vertical-align:middle; white-space:nowrap
+      padding:14px 16px;border-bottom:1px solid var(--divider);
+      white-space:nowrap;vertical-align:middle
     }
     tbody tr:nth-child(odd){background:var(--row-alt)}
     tbody tr:last-child td{border-bottom:none}
-
-    /* Summary row inside table */
-    .summary-row td{
-      background:var(--summary-bg);
-      font-weight:800;
-      color:var(--text);
-      border-bottom:2px solid var(--divider);
-    }
+    .summary-row td{background:var(--summary-bg);font-weight:800;color:var(--text);border-bottom:2px solid var(--divider)}
     .summary-row td .num{color:var(--sui-blue)}
-    .num{color:var(--sui-blue); font-weight:800}
+    .num{color:var(--sui-blue);font-weight:800}
 
-    @media (max-width:720px){
+    @media(max-width:720px){
       thead th,tbody td{padding:12px}
       .container{padding:32px 16px}
     }
@@ -93,7 +73,7 @@
 
   <div class="container">
     <h1>Purchases</h1>
-    <p class="sub">Only SUI acquisitions are shown (no deposits/sells). BTC swaps are valued in GBP using historical prices at the time of trade.</p>
+    <p class="sub">All SUI purchases in GBP, with weighted averages and cumulative holdings.</p>
 
     <div class="table-wrap">
       <table id="purchases">
@@ -107,145 +87,76 @@
             <th>SUI Holdings</th>
           </tr>
         </thead>
-        <tbody><!-- summary row + detail rows injected by JS --></tbody>
+        <tbody></tbody>
       </table>
     </div>
   </div>
 
   <script>
-  (async function(){
+  (function(){
     /* ===========================================================
      * SUPER-SIMPLE INPUT — EDIT THIS ONLY
-     * Each row: ["YYYY-MM-DD HH:MM", SUI_AMOUNT, GBP_TOTAL(or ""), BTC_USED(or "")]
-     * Rules:
-     *  - If GBP_TOTAL is provided, it will be used directly (preferred).
-     *  - Else if BTC_USED is provided, value the lot as BTC_USED × BTC/GBP at that time.
-     *  - Else (both blank), value the lot as SUI_AMOUNT × SUI/GBP at that time.
-     *  - Fees: if you want to include them, add them into GBP_TOTAL (simplest).
+     * Each row: ["YYYY-MM-DD", SUI_AMOUNT, GBP_TOTAL]
      * ===========================================================
     */
     const LOTS = [
-      ["2025-10-22",  823.8576, 1500.05,   ""     ],
-      ["2025-10-21",    1.0512, "",        ""     ], // no GBP/BTC → use SUI GBP at timestamp
-      ["2025-10-20", 1290.562,  2536.55,   ""     ],
-      ["2025-10-10",  310.9235, "",        0.00337], // BTC swap → use BTC price × 0.00337
-      ["2025-10-07",  752,  1992.99,   ""     ],
+      ["2025-10-22", 823.8576, 1500.05],
+      ["2025-10-21", 1.0512, 2.02],
+      ["2025-10-20", 1290.562, 2536.55],
+      ["2025-10-10", 310.9235, 584.99],
+      ["2025-10-07", 752.561, 1992.99],
     ];
     /* ===========================================================
      * DO NOT EDIT BELOW
      * ===========================================================
     */
 
-    // Helpers
-    const toISO = (s)=>{
-      const [d,t="00:00"] = s.trim().split(" ");
-      const [Y,M,D] = d.split("-").map(Number);
-      const [h,m]   = t.split(":").map(Number);
-      const dt = new Date(Y,(M||1)-1,D||1,h||0,m||0);
-      return dt.toISOString();
-    };
-    const toTs = d => Math.floor(new Date(d).getTime()/1000);
-
-    // Convert LOTS → internal TRADES format
-    const TRADES = LOTS.map(([dateStr, suiAmount, gbpTotal, btcAmount])=>{
-      const hasGBP = gbpTotal !== "" && gbpTotal != null;
-      const hasBTC = btcAmount !== "" && btcAmount != null;
-      return hasGBP
-        ? { date: toISO(dateStr), type:"GBP_BUY",  suiAmount:+suiAmount, acqCostGBP:+gbpTotal }
-        : hasBTC
-          ? { date: toISO(dateStr), type:"BTC_SWAP", suiAmount:+suiAmount, btcAmount:+btcAmount }
-          : { date: toISO(dateStr), type:"BTC_SWAP", suiAmount:+suiAmount }; // fallback → price by SUI
-    });
-
-    // Build price range once
-    const minTs = Math.min(...TRADES.map(t=>toTs(t.date))) - 86400;
-    const maxTs = Math.max(...TRADES.map(t=>toTs(t.date))) + 86400;
-
-    async function rangeFn(id){
-      const url = `https://api.coingecko.com/api/v3/coins/${id}/market_chart/range?vs_currency=gbp&from=${minTs}&to=${maxTs}`;
-      const res = await fetch(url,{cache:"no-store"});
-      if(!res.ok) throw new Error("Price fetch failed: "+id);
-      const data = await res.json();
-      const arr = data.prices || [];
-      return (ts)=>{
-        const ms = ts*1000;
-        let best = arr[0], bestD = best ? Math.abs(arr[0][0]-ms) : Infinity;
-        for(const p of arr){ const d = Math.abs(p[0]-ms); if(d < bestD){ best=p; bestD=d; } }
-        return best ? best[1] : NaN;
-      };
-    }
-
-    let suiAt, btcAt;
-    try{
-      [suiAt, btcAt] = await Promise.all([rangeFn("sui"), rangeFn("bitcoin")]);
-    }catch(e){
-      console.error(e); alert("Could not load historical prices. Please refresh.");
-      return;
-    }
-
-    // Build table rows (newest first)
-    TRADES.sort((a,b)=> new Date(b.date) - new Date(a.date));
-
     const nf0 = new Intl.NumberFormat("en-GB",{maximumFractionDigits:0});
     const nf2 = new Intl.NumberFormat("en-GB",{minimumFractionDigits:2,maximumFractionDigits:2});
     const tbody = document.querySelector("#purchases tbody");
 
+    // sort newest first
+    const sorted = LOTS.slice().sort((a,b)=> new Date(b[0]) - new Date(a[0]));
+
     let runningHoldings = 0;
     let totalSui = 0, totalCost = 0;
 
-    const detailRows = TRADES.map((t, idx)=>{
-      const ts = toTs(t.date);
-      const suiAmt = +t.suiAmount || 0;
-
-      // Determine acquisition cost in GBP
-      let acqCost;
-      if(t.type === "GBP_BUY"){
-        acqCost = (typeof t.acqCostGBP === "number") ? (+t.acqCostGBP) : (suiAt(ts)*suiAmt);
-      }else{ // BTC_SWAP
-        if(typeof t.btcAmount === "number"){
-          acqCost = btcAt(ts) * (+t.btcAmount || 0);
-        }else{
-          acqCost = suiAt(ts) * suiAmt;
-        }
-      }
-
-      const avgCost = suiAmt > 0 ? acqCost / suiAmt : NaN;
-
-      runningHoldings += suiAmt;
-      totalSui += suiAmt;
+    const detailRows = sorted.map((row, idx)=>{
+      const [dateStr, suiAmount, acqCost] = row;
+      const avgCost = suiAmount > 0 ? acqCost / suiAmount : NaN;
+      runningHoldings += suiAmount;
+      totalSui += suiAmount;
       totalCost += acqCost;
 
-      const count = TRADES.length - idx;
-      const reported = new Date(t.date).toLocaleString("en-GB",{dateStyle:"medium", timeStyle:"short"});
+      const count = sorted.length - idx;
+      const reported = new Date(dateStr).toLocaleDateString("en-GB",{dateStyle:"medium"});
 
       return `
         <tr>
           <td>${count}</td>
-          <td>${escapeHtml(reported)}</td>
-          <td class="num">${suiAmt ? nf2.format(suiAmt) : "—"}</td>
-          <td class="num">${isFinite(avgCost) ? "£"+nf2.format(avgCost) : "—"}</td>
+          <td>${reported}</td>
+          <td class="num">${nf2.format(suiAmount)}</td>
+          <td class="num">£${nf2.format(avgCost)}</td>
           <td class="num">£${nf2.format(acqCost)}</td>
           <td class="num">${nf0.format(runningHoldings)}</td>
         </tr>
       `;
     });
 
-    // Summary row (first row under headings)
+    // Summary row
     const weightedAvg = totalSui > 0 ? (totalCost / totalSui) : NaN;
     const summaryRow = `
       <tr class="summary-row">
         <td>—</td>
         <td>Summary</td>
-        <td><span class="num">${totalSui ? nf2.format(totalSui) : "—"}</span></td>
-        <td><span class="num">${isFinite(weightedAvg) ? "£"+nf2.format(weightedAvg) : "—"}</span></td>
+        <td><span class="num">${nf2.format(totalSui)}</span></td>
+        <td><span class="num">£${nf2.format(weightedAvg)}</span></td>
         <td><span class="num">£${nf2.format(totalCost)}</span></td>
         <td><span class="num">${nf0.format(runningHoldings)}</span></td>
       </tr>
     `;
 
     tbody.innerHTML = summaryRow + detailRows.join("");
-
-    function escapeHtml(s){return String(s).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
   })();
   </script>
 </body>
