@@ -10,19 +10,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#0c0e11; --text:#d6eeff; --muted:#9bb7ce;
-    --sui-blue:#00baff;
+    --bg:#0c0e11; --text:#d6eeff; --muted:#9bb7ce; --sui-blue:#00baff;
     --banner-bg:linear-gradient(90deg,#001b29 0%,#004a68 50%,#00baff 100%);
     --banner-text:#d7f6ff; --banner-hover:#ffffff;
-    --topbar-bg:#11161b; --nav-pill:#141b21; --nav-pill-active:#1f2a33;
-    --glow:.45;
+    --topbar-bg:#11161b; --nav-pill:#141b21; --nav-pill-active:#1f2a33; --glow:.45;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  body{
-    background:var(--bg); color:var(--text);
-    font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-    -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
-  }
+  body{background:var(--bg); color:var(--text); font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;}
   body::before{
     content:"";position:fixed;top:-200px;right:-200px;width:620px;height:620px;pointer-events:none;
     background:
@@ -30,189 +24,107 @@
       radial-gradient(60% 60% at 30% 70%, rgba(0,128,255,.25) 0%, rgba(0,128,255,0) 70%);
     filter:blur(80px) saturate(130%);opacity:var(--glow);z-index:0;
   }
-
-  /* Banner */
-  .banner{
-    width:100%; background:var(--banner-bg); color:var(--banner-text);
-    position:sticky; top:0; z-index:1000;
-    box-shadow:0 4px 20px rgba(0,0,0,.4);
-    border-bottom:1px solid rgba(0,186,255,.15);
-  }
-  .banner .inner{
-    max-width:1200px; margin:0 auto; padding:8px 24px;
-    display:flex; align-items:center; justify-content:flex-end; gap:18px;
-  }
-  .banner a{
-    color:var(--banner-text); text-decoration:none; font-weight:700;
-    text-transform:uppercase; letter-spacing:.05em; font-size:.85rem; opacity:.9;
-    transition:color .2s ease, opacity .2s ease;
-  }
+  .banner{width:100%; background:var(--banner-bg); color:var(--banner-text); position:sticky; top:0; z-index:1000; box-shadow:0 4px 20px rgba(0,0,0,.4); border-bottom:1px solid rgba(0,186,255,.15)}
+  .banner .inner{max-width:1200px; margin:0 auto; padding:8px 24px; display:flex; align-items:center; justify-content:flex-end; gap:18px}
+  .banner a{color:var(--banner-text); text-decoration:none; font-weight:700; text-transform:uppercase; letter-spacing:.05em; font-size:.85rem; opacity:.9; transition:color .2s ease, opacity .2s ease}
   .banner a:hover{color:var(--banner-hover); opacity:1}
-  .banner .dot{opacity:.5; user-select:none}
-
-  /* Topbar (no “Company” here) */
+  .banner .dot{opacity:.5}
   .topbar{background:var(--topbar-bg); color:#e9f8ff}
   .topbar .inner{max-width:1200px;margin:0 auto;padding:12px 24px;display:flex;justify-content:space-between;align-items:center;gap:12px}
   .logo{display:flex;align-items:center;text-decoration:none}
   .logo svg{height:38px;width:auto;display:block}
   .nav{display:flex;gap:6px}
-  .nav a{
-    color:#a3c7e5;text-decoration:none;font-weight:600;font-size:.9rem;
-    padding:8px 12px;border-radius:999px;background:var(--nav-pill);border:1px solid rgba(255,255,255,.05);
-    transition:all .2s ease;
-  }
+  .nav a{color:#a3c7e5;text-decoration:none;font-weight:600;font-size:.9rem;padding:8px 12px;border-radius:999px;background:var(--nav-pill);border:1px solid rgba(255,255,255,.05);transition:all .2s ease}
   .nav a:hover{background:var(--nav-pill-active)}
   .nav a.active{background:#00baff;color:#fff;border-color:transparent}
-
-  /* Hero */
-  .hero{
-    display:flex;align-items:center;justify-content:space-between;
-    max-width:1200px;margin:80px auto 120px;padding:0 24px;gap:48px;position:relative;z-index:1;
-  }
+  .hero{display:flex;align-items:center;justify-content:space-between;max-width:1200px;margin:80px auto 120px;padding:0 24px;gap:48px;position:relative;z-index:1}
   .hero-text{flex:1}
-  .hero-text h1{
-    font-size:44px;line-height:1.15;font-weight:800;letter-spacing:-.01em;
-    color:#eaf7ff;margin-bottom:24px;
-  }
+  .hero-text h1{font-size:44px;line-height:1.15;font-weight:800;letter-spacing:-.01em;color:#eaf7ff;margin-bottom:24px}
   .hero-text h1 span{color:var(--sui-blue)}
   .hero-text p{color:var(--muted);font-size:18px;line-height:1.6;max-width:560px}
-
   .hero-media{flex:1;display:flex;justify-content:center}
-  .frame{
-    width:100%; max-width:520px; aspect-ratio:16/10;
-    border-radius:16px; overflow:hidden; position:relative;
-    background:radial-gradient(120% 120% at 10% 10%, rgba(0,186,255,.15) 0%, rgba(0,186,255,0) 60%),
-               linear-gradient(180deg,#081018 0%,#0c141c 100%);
-    box-shadow:0 0 36px rgba(0,186,255,.22), inset 0 0 40px rgba(0,186,255,.08);
-    border:1px solid rgba(0,186,255,.12);
-  }
+  .frame{width:100%; max-width:520px; aspect-ratio:16/10; border-radius:16px; overflow:hidden; position:relative; background:radial-gradient(120% 120% at 10% 10%, rgba(0,186,255,.15) 0%, rgba(0,186,255,0) 60%), linear-gradient(180deg,#081018 0%,#0c141c 100%); box-shadow:0 0 36px rgba(0,186,255,.22), inset 0 0 40px rgba(0,186,255,.08); border:1px solid rgba(0,186,255,.12)}
   svg{width:100%;height:100%;display:block}
-
-  @media(max-width:900px){
-    .hero{flex-direction:column;text-align:center;margin:56px auto 80px}
-    .hero-text p{margin:0 auto}
-  }
+  @media(max-width:900px){.hero{flex-direction:column;text-align:center;margin:56px auto 80px}.hero-text p{margin:0 auto}}
 </style>
 </head>
 <body>
-
-<!-- Banner -->
-<div class="banner">
-  <div class="inner">
-    <a href="index.html">analytics</a>
-    <span class="dot">•</span>
-    <a href="company.html">company</a>
-  </div>
-</div>
-
-<!-- Topbar with NEW logo -->
-<header class="topbar">
-  <div class="inner">
-    <a class="logo" href="index.html" aria-label="KAH home">
-      <!-- KAH logo: stacked arrows + thin lines -->
-      <svg viewBox="0 0 320 56" xmlns="http://www.w3.org/2000/svg" role="img">
-        <defs>
-          <linearGradient id="kahBlue" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stop-color="#64E6FF"/>
-            <stop offset="1" stop-color="#00BAFF"/>
-          </linearGradient>
-          <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="b"/>
-            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-          </filter>
-        </defs>
-
-        <!-- thin lines -->
-        <rect x="-2" y="5"  width="120" height="1.2" fill="url(#kahBlue)" opacity="0.9" filter="url(#softGlow)" />
-        <rect x="-2" y="50" width="120" height="1.2" fill="url(#kahBlue)" opacity="0.9" filter="url(#softGlow)" />
-
-        <!-- wordmark (tight letter spacing) -->
-        <g fill="#FFFFFF" font-family="Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif"
-           font-size="42" font-weight="800" letter-spacing="1">
-          <text x="0"  y="41">K</text>
-          <text x="33" y="41">A</text>
-          <text x="68" y="41">H</text>
-        </g>
-
-        <!-- stacked arrows -->
-        <g transform="translate(118,4)" fill="url(#kahBlue)" filter="url(#softGlow)">
-          <path d="M0 18 L14 4 L28 18 L22 24 L14 16 L6 24 Z"/>
-          <path d="M0 36 L14 22 L28 36 L22 42 L14 34 L6 42 Z"/>
-        </g>
-      </svg>
-    </a>
-
-    <nav class="nav">
-      <a href="index.html">Overview</a>
-      <a href="purchases.html">Purchases</a>
-    </nav>
-  </div>
-</header>
-
-<!-- HERO ONLY -->
-<section class="hero">
-  <div class="hero-text">
-    <h1>
-      We are the world's first and largest <span>Sui Treasury</span> company,<br>
-      and a leading independent digital asset management firm.
-    </h1>
-    <p>
-      Kaplan Asset Holdings manages SUI as a strategic corporate reserve, aligning treasury
-      operations with long-term conviction in decentralised technology and the Sui network.
-    </p>
-  </div>
-
-  <!-- Glowing network-nodes illustration (inline SVG) -->
-  <div class="hero-media">
-    <div class="frame" aria-label="Sui network visualization">
-      <svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Network nodes">
-        <defs>
-          <filter id="glow">
-            <feGaussianBlur stdDeviation="4" result="b"/>
-            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-          </filter>
-          <radialGradient id="nodeGrad" cx="50%" cy="50%" r="50%">
-            <stop offset="0" stop-color="#66e0ff"/>
-            <stop offset="1" stop-color="#00baff"/>
-          </radialGradient>
-          <linearGradient id="lineGrad" x1="0" x2="1">
-            <stop offset="0" stop-color="#5fd8ff" stop-opacity=".9"/>
-            <stop offset="1" stop-color="#00baff" stop-opacity=".5"/>
-          </linearGradient>
-        </defs>
-
-        <!-- faint grid -->
-        <g opacity=".12">
-          <path d="M0 100 H800 M0 200 H800 M0 300 H800 M0 400 H800" stroke="#7bdcff" />
-          <path d="M100 0 V500 M200 0 V500 M300 0 V500 M400 0 V500 M500 0 V500 M600 0 V500 M700 0 V500" stroke="#7bdcff" />
-        </g>
-
-        <!-- connections -->
-        <g stroke="url(#lineGrad)" stroke-width="2" filter="url(#glow)">
-          <path d="M140 360 L300 280 L520 340 L680 210" />
-          <path d="M160 140 L300 280 L460 160 L640 120" />
-          <path d="M300 280 L520 80 L700 320" />
-          <path d="M220 420 L300 280 L440 420" />
-        </g>
-
-        <!-- nodes -->
-        <g filter="url(#glow)">
-          <circle cx="140" cy="360" r="10" fill="url(#nodeGrad)"/>
-          <circle cx="160" cy="140" r="9"  fill="url(#nodeGrad)"/>
-          <circle cx="300" cy="280" r="12" fill="url(#nodeGrad)"/>
-          <circle cx="520" cy="340" r="10" fill="url(#nodeGrad)"/>
-          <circle cx="520" cy="80"  r="9"  fill="url(#nodeGrad)"/>
-          <circle cx="460" cy="160" r="8"  fill="url(#nodeGrad)"/>
-          <circle cx="640" cy="120" r="10" fill="url(#nodeGrad)"/>
-          <circle cx="680" cy="210" r="11" fill="url(#nodeGrad)"/>
-          <circle cx="700" cy="320" r="9"  fill="url(#nodeGrad)"/>
-          <circle cx="220" cy="420" r="9"  fill="url(#nodeGrad)"/>
-          <circle cx="440" cy="420" r="9"  fill="url(#nodeGrad)"/>
-        </g>
-      </svg>
+  <!-- Banner -->
+  <div class="banner">
+    <div class="inner">
+      <a href="index.html">analytics</a>
+      <span class="dot">•</span>
+      <a href="company.html">company</a>
     </div>
   </div>
-</section>
 
+  <!-- Topbar with UPDATED snug logo -->
+  <header class="topbar">
+    <div class="inner">
+      <a class="logo" href="index.html" aria-label="KAH home">
+        <svg viewBox="0 0 320 56" xmlns="http://www.w3.org/2000/svg" role="img">
+          <defs>
+            <linearGradient id="kahBlue" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#64E6FF"/><stop offset="1" stop-color="#00BAFF"/>
+            </linearGradient>
+            <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="1.7" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+          <rect x="-2" y="6"  width="112" height="1" fill="url(#kahBlue)" opacity="0.95" filter="url(#softGlow)"/>
+          <rect x="-2" y="49" width="112" height="1" fill="url(#kahBlue)" opacity="0.95" filter="url(#softGlow)"/>
+          <g fill="#FFFFFF" font-family="Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif"
+             font-size="42" font-weight="800" letter-spacing="0.5">
+            <text x="0"  y="41">K</text>
+            <text x="32" y="41">A</text>
+            <text x="64" y="41">H</text>
+          </g>
+          <g transform="translate(96,8)" fill="url(#kahBlue)" filter="url(#softGlow)">
+            <path d="M0 13 L8 5 L16 13 L13 16 L8 11 L3 16 Z"/>
+            <path d="M0 26 L8 18 L16 26 L13 29 L8 24 L3 29 Z"/>
+          </g>
+        </svg>
+      </a>
+      <nav class="nav">
+        <a href="index.html">Overview</a>
+        <a href="purchases.html">Purchases</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO ONLY -->
+  <section class="hero">
+    <div class="hero-text">
+      <h1>
+        We are the world's first and largest <span>Sui Treasury</span> company,<br>
+        and a leading independent digital asset management firm.
+      </h1>
+      <p>
+        Kaplan Asset Holdings manages SUI as a strategic corporate reserve, aligning treasury
+        operations with long-term conviction in decentralised technology and the Sui network.
+      </p>
+    </div>
+
+    <div class="hero-media">
+      <div class="frame" aria-label="Sui network visualization">
+        <svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Network nodes">
+          <defs>
+            <filter id="glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            <radialGradient id="nodeGrad" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#66e0ff"/><stop offset="1" stop-color="#00baff"/></radialGradient>
+            <linearGradient id="lineGrad" x1="0" x2="1"><stop offset="0" stop-color="#5fd8ff" stop-opacity=".9"/><stop offset="1" stop-color="#00baff" stop-opacity=".5"/></linearGradient>
+          </defs>
+          <g opacity=".12"><path d="M0 100 H800 M0 200 H800 M0 300 H800 M0 400 H800" stroke="#7bdcff"/><path d="M100 0 V500 M200 0 V500 M300 0 V500 M400 0 V500 M500 0 V500 M600 0 V500 M700 0 V500" stroke="#7bdcff"/></g>
+          <g stroke="url(#lineGrad)" stroke-width="2" filter="url(#glow)"><path d="M140 360 L300 280 L520 340 L680 210"/><path d="M160 140 L300 280 L460 160 L640 120"/><path d="M300 280 L520 80 L700 320"/><path d="M220 420 L300 280 L440 420"/></g>
+          <g filter="url(#glow)">
+            <circle cx="140" cy="360" r="10" fill="url(#nodeGrad)"/><circle cx="160" cy="140" r="9" fill="url(#nodeGrad)"/><circle cx="300" cy="280" r="12" fill="url(#nodeGrad)"/>
+            <circle cx="520" cy="340" r="10" fill="url(#nodeGrad)"/><circle cx="520" cy="80" r="9" fill="url(#nodeGrad)"/><circle cx="460" cy="160" r="8" fill="url(#nodeGrad)"/>
+            <circle cx="640" cy="120" r="10" fill="url(#nodeGrad)"/><circle cx="680" cy="210" r="11" fill="url(#nodeGrad)"/><circle cx="700" cy="320" r="9" fill="url(#nodeGrad)"/>
+            <circle cx="220" cy="420" r="9" fill="url(#nodeGrad)"/><circle cx="440" cy="420" r="9" fill="url(#nodeGrad)"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </section>
 </body>
 </html>
