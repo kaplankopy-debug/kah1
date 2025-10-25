@@ -1,0 +1,50 @@
+<!-- header.html -->
+<!-- Top gradient banner -->
+<div class="banner">
+  <div class="inner">
+    <a href="index.html">analytics</a>
+    <span class="dot">•</span>
+    <a href="company.html">company</a>
+  </div>
+</div>
+
+<!-- Topbar with centered nav and snug KAH logo -->
+<header class="topbar">
+  <div class="inner">
+    <a class="logo" href="index.html" aria-label="KAH home">
+      <svg viewBox="0 0 320 56" xmlns="http://www.w3.org/2000/svg" role="img">
+        <defs>
+          <linearGradient id="kahBlue" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#64E6FF"/><stop offset="1" stop-color="#00BAFF"/>
+          </linearGradient>
+          <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="1.7" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <!-- thin lines framing the wordmark -->
+        <rect x="-2" y="6"  width="112" height="1" fill="url(#kahBlue)" opacity="0.95" filter="url(#softGlow)"/>
+        <rect x="-2" y="49" width="112" height="1" fill="url(#kahBlue)" opacity="0.95" filter="url(#softGlow)"/>
+        <!-- K A H (tighter spacing) -->
+        <g fill="#FFFFFF" font-family="Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif"
+           font-size="42" font-weight="800" letter-spacing="0.5">
+          <text x="0"  y="41">K</text>
+          <text x="32" y="41">A</text>
+          <text x="64" y="41">H</text>
+        </g>
+        <!-- snug, smaller vertical arrows right next to H -->
+        <g transform="translate(96,8)" fill="url(#kahBlue)" filter="url(#softGlow)">
+          <path d="M0 13 L8 5 L16 13 L13 16 L8 11 L3 16 Z"/>
+          <path d="M0 26 L8 18 L16 26 L13 29 L8 24 L3 29 Z"/>
+        </g>
+      </svg>
+    </a>
+
+    <nav class="nav">
+      <a href="index.html">Overview</a>
+      <a href="purchases.html">Purchases</a>
+    </nav>
+
+    <div class="spacer"></div>
+  </div>
+</header>
