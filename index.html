@@ -21,6 +21,11 @@
       --nav-pill:#141b21;
       --nav-pill-active:#1f2a33;
       --glow-strength:0.45;
+
+      /* NEW: strategy-style orange banner */
+      --banner-bg:#ff7a1a;           /* orange */
+      --banner-text:#0b0f13;         /* near-black text on orange */
+      --banner-text-hover:#000812;   /* slightly darker on hover */
     }
 
     *{box-sizing:border-box;margin:0;padding:0}
@@ -49,6 +54,32 @@
       opacity:var(--glow-strength);
       z-index:0;
     }
+
+    /* ============== ORANGE BANNER (NEW) ============== */
+    .banner{
+      width:100%;
+      background:var(--banner-bg);
+      color:var(--banner-text);
+      position:sticky; top:0; z-index:1000;
+      box-shadow:0 1px 0 rgba(0,0,0,.15), 0 8px 24px rgba(0,0,0,.25);
+    }
+    .banner .inner{
+      max-width:1200px; margin:0 auto;
+      padding:8px 24px;
+      display:flex; align-items:center; justify-content:center; gap:18px;
+    }
+    .banner a{
+      color:var(--banner-text);
+      text-decoration:none;
+      font-weight:800;
+      letter-spacing:.02em;
+      text-transform:uppercase;
+      font-size:.85rem;
+      transition:color .2s ease, opacity .2s ease;
+      opacity:.95;
+    }
+    .banner a:hover{ color:var(--banner-text-hover); opacity:1 }
+    .banner .dot{opacity:.5; user-select:none}
 
     /* Header + Nav */
     .topbar{width:100%;background:var(--topbar-bg);color:var(--topbar-text);position:relative;z-index:1}
@@ -108,6 +139,8 @@
 
     /* Mobile */
     @media (max-width:640px){
+      .banner .inner{gap:12px; padding:8px 16px}
+      .banner a{font-size:.8rem}
       .container{padding:40px 16px}
       h1{font-size:1.6rem}
       p.sub{margin-bottom:32px}
@@ -122,6 +155,16 @@
   </style>
 </head>
 <body>
+
+  <!-- NEW: Orange banner like Strategy -->
+  <div class="banner">
+    <div class="inner">
+      <a href="index.html">analytics</a>
+      <span class="dot">•</span>
+      <a href="company.html">company</a>
+    </div>
+  </div>
+
   <header class="topbar">
     <div class="inner">
       <div class="brand">Kaplan Asset Holdings</div>
@@ -224,4 +267,3 @@
   </script>
 </body>
 </html>
-
