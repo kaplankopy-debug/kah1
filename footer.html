@@ -1,50 +1,30 @@
 <!-- footer.html -->
 <style>
   :root{
-    --footer-bg:#090c10;
-    --footer-text:#a9bfd4;
-    --footer-strong:#e8f5ff;
-    --footer-link:#bfe7ff;
+    --footer-gradient: linear-gradient(90deg,#001b29 0%,#004a68 50%,#00baff 100%);
+    --footer-text:#e8f7ff;
+    --footer-link:#d1f2ff;
     --footer-link-hover:#ffffff;
-    --footer-divider:#18222c;
   }
   .site-footer{
     margin-top:56px;
-    background:var(--footer-bg);
-    color:var(--footer-text);
-    border-top:1px solid var(--footer-divider);
+    background: var(--footer-gradient);
+    color: var(--footer-text);
+    border-top: 1px solid rgba(0,186,255,.25);
+    box-shadow: 0 -6px 24px rgba(0,0,0,.25) inset;
   }
   .site-footer .inner{
-    max-width:1200px;
-    margin:0 auto;
-    padding:22px 24px;
-    display:flex;
-    align-items:center;
-    gap:24px;
-    flex-wrap:wrap;
+    max-width:1200px; margin:0 auto; padding:22px 24px;
+    display:flex; align-items:center; gap:24px; flex-wrap:wrap;
   }
   .f-brand{
-    font-weight:900;
-    letter-spacing:.5px;
-    color:var(--footer-strong);
-    font-size:1.25rem;
-    text-decoration:none;
-    margin-right:12px;
+    font-weight:900; letter-spacing:.5px; color:#fff; font-size:1.25rem;
+    text-decoration:none; margin-right:12px;
   }
-  .f-copy{
-    white-space:nowrap;
-    margin-right:auto;
-  }
-  .f-links{
-    display:flex;
-    gap:18px;
-    flex-wrap:wrap;
-  }
+  .f-copy{ white-space:nowrap; margin-right:auto; }
+  .f-links{ display:flex; gap:18px; flex-wrap:wrap; }
   .f-links a{
-    color:var(--footer-link);
-    text-decoration:none;
-    font-weight:600;
-    font-size:.95rem;
+    color:var(--footer-link); text-decoration:none; font-weight:600; font-size:.95rem;
   }
   .f-links a:hover{ color:var(--footer-link-hover); }
 </style>
@@ -55,12 +35,14 @@
     <div class="f-copy">© <span id="year"></span> Kaplan Asset Holdings. All rights reserved.</div>
     <nav class="f-links" aria-label="Footer">
       <a href="#" title="placeholder">Contact Us</a>
+      <a href="#" title="placeholder">Media Kit</a>
+      <a href="#" title="placeholder">Legal</a>
+      <a href="#" title="placeholder">Terms of use</a>
       <a href="#" title="placeholder">Privacy policy</a>
     </nav>
   </div>
 </footer>
 
 <script>
-  // Set current year automatically
   (function(){ document.getElementById('year').textContent = new Date().getFullYear(); })();
 </script>
