@@ -5,7 +5,10 @@
     --footer-text:#e8f7ff;
     --footer-link:#d1f2ff;
     --footer-link-hover:#ffffff;
+    --footer-line:#ffffff;
+    --footer-logo-text:#bde9ff;
   }
+
   .site-footer{
     margin-top:56px;
     background: var(--footer-gradient);
@@ -13,26 +16,78 @@
     border-top: 1px solid rgba(0,186,255,.25);
     box-shadow: 0 -6px 24px rgba(0,0,0,.25) inset;
   }
+
   .site-footer .inner{
-    max-width:1200px; margin:0 auto; padding:22px 24px;
+    max-width:1200px; margin:0 auto; padding:26px 24px;
     display:flex; align-items:center; gap:24px; flex-wrap:wrap;
   }
-  .f-brand{
-    font-weight:900; letter-spacing:.5px; color:#fff; font-size:1.25rem;
-    text-decoration:none; margin-right:12px;
+
+  /* Re-use header logo style, adapted for footer palette */
+  .kah-logo-footer{
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    font-family:'Inter', system-ui, sans-serif;
+    font-weight:800; line-height:1.05; text-align:center;
+    color:var(--footer-logo-text); letter-spacing:-.5px;
+    position:relative;
+    text-decoration:none;
   }
+
+  .kah-logo-footer span{
+    display:block;
+    font-size:.95rem;
+    text-transform:uppercase;
+  }
+
+  .kah-logo-footer::before,
+  .kah-logo-footer::after{
+    content:"";
+    display:block;
+    height:1.5px;
+    width:120%;
+    background:var(--footer-line);
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+  }
+
+  .kah-logo-footer::before{ top:-6px; }
+  .kah-logo-footer::after{ bottom:-6px; }
+
   .f-copy{ white-space:nowrap; margin-right:auto; }
-  .f-links{ display:flex; gap:18px; flex-wrap:wrap; }
-  .f-links a{
-    color:var(--footer-link); text-decoration:none; font-weight:600; font-size:.95rem;
+
+  .f-links{
+    display:flex; gap:18px; flex-wrap:wrap;
   }
+
+  .f-links a{
+    color:var(--footer-link);
+    text-decoration:none;
+    font-weight:600;
+    font-size:.95rem;
+  }
+
   .f-links a:hover{ color:var(--footer-link-hover); }
+
+  @media (max-width:640px){
+    .site-footer .inner{
+      flex-direction:column;
+      align-items:center;
+      text-align:center;
+    }
+    .f-copy{ margin:12px 0; }
+  }
 </style>
 
 <footer class="site-footer" role="contentinfo">
   <div class="inner">
-    <a class="f-brand" href="index.html" aria-label="KAH home">KAH</a>
+    <a href="index.html" class="kah-logo-footer" aria-label="Kaplan Asset Holdings">
+      <span>Kaplan</span>
+      <span>Asset</span>
+      <span>Holdings</span>
+    </a>
+
     <div class="f-copy">© <span id="year"></span> Kaplan Asset Holdings. All rights reserved.</div>
+
     <nav class="f-links" aria-label="Footer">
       <a href="#" title="placeholder">Contact Us</a>
       <a href="#" title="placeholder">Media Kit</a>
@@ -44,5 +99,7 @@
 </footer>
 
 <script>
-  (function(){ document.getElementById('year').textContent = new Date().getFullYear(); })();
+  (function(){
+    document.getElementById('year').textContent = new Date().getFullYear();
+  })();
 </script>
