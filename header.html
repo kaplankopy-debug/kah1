@@ -1,122 +1,74 @@
 <!-- header.html -->
 <style>
   :root {
-    --banner-bg: linear-gradient(90deg, #001b29 0%, #004a68 50%, #00baff 100%);
-    --banner-text: #d7f6ff;
-    --banner-text-hover: #ffffff;
-    --line-blue: #00baff;
+    /* Keep your site palette */
+    --bg:#0c0e11;                   /* page background */
+    --sui-blue:#00baff;
+    --banner-text:#d7f6ff;
+    --banner-text-hover:#ffffff;
+
+    /* footer uses this gradient now */
+    --footer-gradient: linear-gradient(90deg,#001b29 0%,#004a68 50%,#00baff 100%);
   }
 
+  /* Dark header, same as page bg */
   .banner {
-    width: 100%;
-    background: var(--banner-bg);
+    width:100%;
+    background: var(--bg);
     color: var(--banner-text);
     position: sticky;
     top: 0;
     z-index: 1000;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, .4);
-    border-bottom: 1px solid rgba(0, 186, 255, .15);
+    /* faint blue demarcation line */
+    border-bottom: 1px solid rgba(0,186,255,.35);
+    box-shadow: 0 2px 12px rgba(0,0,0,.25);
   }
-
-  .banner .inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 8px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  .banner .inner{
+    max-width:1200px; margin:0 auto; padding:10px 24px;
+    display:flex; align-items:center; justify-content:space-between;
   }
 
   /* Centered stacked logo */
-  .kah-logo {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Inter', system-ui, sans-serif;
-    font-weight: 800;
-    line-height: 1.05;
-    color: #fff;
-    position: relative;
-    letter-spacing: -0.5px;
-    text-align: center;
+  .kah-logo{
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    font-family: 'Inter', system-ui, sans-serif; font-weight:800; line-height:1.05;
+    color:#fff; letter-spacing:-.5px; text-align:center; position:relative;
   }
-
-  .kah-logo span {
-    display: block;
-    font-size: 0.95rem;
-    text-transform: uppercase;
+  .kah-logo span{ display:block; font-size:.95rem; text-transform:uppercase; }
+  .kah-logo::before, .kah-logo::after{
+    content:""; display:block; height:1.5px; width:120%;
+    background: var(--sui-blue);
+    position:absolute; left:50%; transform:translateX(-50%);
   }
+  .kah-logo::before{ top:-6px; }
+  .kah-logo::after{ bottom:-6px; }
 
-  .kah-logo::before,
-  .kah-logo::after {
-    content: "";
-    display: block;
-    height: 1.5px;
-    width: 120%;
-    background: var(--line-blue);
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+  /* Banner links (right side) */
+  .banner-links{
+    display:flex; align-items:center; gap:18px;
+    font-weight:700; text-transform:uppercase; font-size:.85rem; letter-spacing:.05em;
   }
-
-  .kah-logo::before {
-    top: -6px;
-  }
-
-  .kah-logo::after {
-    bottom: -6px;
-  }
-
-  /* Banner links */
-  .banner-links {
-    display: flex;
-    align-items: center;
-    gap: 18px;
-    font-weight: 700;
-    text-transform: uppercase;
-    font-size: 0.85rem;
-    letter-spacing: 0.05em;
-  }
-
-  .banner-links a {
-    color: var(--banner-text);
-    text-decoration: none;
-    opacity: 0.9;
+  .banner-links a{
+    color:var(--banner-text); text-decoration:none; opacity:.9;
     transition: color .2s ease, opacity .2s ease;
   }
+  .banner-links a:hover{ color:var(--banner-text-hover); opacity:1; }
+  .banner-links .dot{ opacity:.5; user-select:none; }
 
-  .banner-links a:hover {
-    color: var(--banner-text-hover);
-    opacity: 1;
-  }
-
-  .banner-links .dot {
-    opacity: .5;
-    user-select: none;
-  }
-
-  @media (max-width: 640px) {
-    .banner .inner {
-      flex-direction: column;
-      gap: 10px;
-    }
-    .kah-logo {
-      align-items: center;
-      text-align: center;
-    }
+  @media (max-width:640px){
+    .banner .inner{ flex-direction:column; gap:10px; }
   }
 </style>
 
 <div class="banner">
   <div class="inner">
-    <div class="kah-logo">
+    <div class="kah-logo" aria-label="Kaplan Asset Holdings">
       <span>Kaplan</span>
       <span>Asset</span>
       <span>Holdings</span>
     </div>
 
-    <div class="banner-links">
+    <nav class="banner-links" aria-label="Top">
       <a href="index.html">Analytics</a>
       <span class="dot">•</span>
       <a href="purchases.html">Purchases</a>
@@ -124,6 +76,6 @@
       <a href="company.html">Company</a>
       <span class="dot">•</span>
       <a href="media.html">Media</a>
-    </div>
+    </nav>
   </div>
 </div>
