@@ -129,27 +129,30 @@
         <h2>Live from X</h2>
 
         <div class="x-tabs" role="tablist" aria-label="X feed selector">
-          <button class="x-tab active" data-target="#feed-profile" role="tab" aria-selected="true">@SuiNetwork</button>
+          <button class="x-tab active" data-target="#feed-cashtag" role="tab" aria-selected="true">$SUI</button>
           <button class="x-tab" data-target="#feed-hashtag" role="tab" aria-selected="false">#Sui</button>
         </div>
 
         <div class="x-feeds">
-          <div id="feed-profile" class="x-feed visible">
+          <!-- $SUI cashtag search (retweets filtered out, live) -->
+          <div id="feed-cashtag" class="x-feed visible">
             <a class="twitter-timeline"
                data-theme="dark"
                data-chrome="noheader nofooter transparent"
                data-tweet-limit="6"
-               href="https://twitter.com/SuiNetwork">
-               Tweets by @SuiNetwork
+               href="https://twitter.com/search?q=%24SUI%20-is%3Aretweet&f=live">
+               $SUI posts on X
             </a>
           </div>
 
+          <!-- #Sui hashtag (retweets filtered, live) -->
           <div id="feed-hashtag" class="x-feed">
-            <a class="twitter-timeline"
+            <a class="twitter-timeline
+"
                data-theme="dark"
                data-chrome="noheader nofooter transparent"
                data-tweet-limit="6"
-               href="https://twitter.com/hashtag/Sui">
+               href="https://twitter.com/search?q=%23Sui%20-is%3Aretweet&f=live">
                #Sui on X
             </a>
           </div>
@@ -181,7 +184,7 @@
         showFeed(btn.getAttribute('data-target'));
       });
 
-      document.addEventListener('DOMContentLoaded', () => showFeed('#feed-profile'));
+      document.addEventListener('DOMContentLoaded', () => showFeed('#feed-cashtag'));
     })();
   </script>
 
@@ -200,127 +203,3 @@
     const MAX_PAGES = 3; // 6 x 3 = 18
 
     let items = [];
-    let currentPage = 1;
-    let totalPages = 1;
-
-    const timeAgo = (d) => {
-      const diff = (Date.now() - new Date(d).getTime())/1000;
-      const t = (n,u)=>`${Math.floor(n)} ${u}${Math.floor(n)>1?'s':''} ago`;
-      if(diff<60) return t(diff,'sec');
-      if(diff<3600) return t(diff/60,'min');
-      if(diff<86400) return t(diff/3600,'hr');
-      return new Date(d).toLocaleDateString('en-GB',{dateStyle:'medium'});
-    };
-
-    function clean(text){
-      return (text || '').replace(/<[^>]+>/g,'').replace(/\s+/g,' ').trim();
-    }
-
-    function normItem(item, source){
-      return {
-        title: clean(item.title),
-        link: item.link || item.guid || item.url,
-        pubDate: item.pubDate || item.published || item.date || item.created || Date.now(),
-        description: clean(item.description || item.content || ''),
-        source
-      };
-    }
-
-    function renderPage(page){
-      currentPage = page;
-      const start = (page - 1) * PAGE_SIZE;
-      const slice = items.slice(start, start + PAGE_SIZE);
-
-      el.innerHTML = slice.map(x=>`
-        <article class="card">
-          <div class="meta">
-            <span class="source">${x.source || 'Source'}</span>
-            <span class="dot">•</span>
-            <span class="time">${timeAgo(x.pubDate)}</span>
-          </div>
-          <a class="title" href="${x.link}" target="_blank" rel="noopener noreferrer">${x.title}</a>
-          ${x.description ? `<p class="desc">${x.description}</p>` : ''}
-        </article>
-      `).join('');
-
-      // pager
-      const prevDisabled = (page===1) ? 'disabled' : '';
-      const nextDisabled = (page===totalPages) ? 'disabled' : '';
-      const nums = Array.from({length: totalPages}, (_,i)=> i+1).map(n =>
-        `<button class="${n===page?'active':''}" data-page="${n}">${n}</button>`
-      ).join('');
-      pagerEl.innerHTML = `
-        <button ${prevDisabled} data-page="prev">Prev</button>
-        ${nums}
-        <button ${nextDisabled} data-page="next">Next</button>
-      `;
-    }
-
-    pagerEl.addEventListener('click', (e)=>{
-      const btn = e.target.closest('button'); if(!btn) return;
-      const p = btn.getAttribute('data-page');
-      if(p==='prev' && currentPage>1) renderPage(currentPage-1);
-      else if(p==='next' && currentPage<totalPages) renderPage(currentPage+1);
-      else{
-        const n = parseInt(p,10);
-        if(!isNaN(n) && n>=1 && n<=totalPages) renderPage(n);
-      }
-    });
-
-    async function loadFeeds(){
-      const all = [];
-      const results = await Promise.allSettled(FEEDS.map(u=>fetch(u,{cache:'no-store'}).then(r=>r.json())));
-      results.forEach((res, idx)=>{
-        if(res.status!=='fulfilled') return;
-        const feed = res.value;
-        const src = feed?.feed?.title || (idx===0?'Google News':'Feed');
-        (feed?.items || []).forEach(it => all.push(normItem(it, src)));
-      });
-
-      // Filter for "Sui"
-      const filtered = all.filter(x=>{
-        const t = (x.title + ' ' + x.description).toLowerCase();
-        return t.includes('sui ');
-      });
-
-      // Dedupe by link/title
-      const seen = new Set();
-      const uniq = [];
-      filtered.forEach(x=>{
-        const key = (x.link || x.title).toLowerCase();
-        if(!seen.has(key)){ seen.add(key); uniq.push(x); }
-      });
-
-      // Sort newest, then cap to 18 (6 x 3 pages)
-      uniq.sort((a,b)=> new Date(b.pubDate) - new Date(a.pubDate));
-      items = uniq.slice(0, PAGE_SIZE * MAX_PAGES);
-
-      totalPages = Math.max(1, Math.min(MAX_PAGES, Math.ceil(items.length / PAGE_SIZE)));
-
-      if(items.length===0){
-        el.innerHTML = '<div class="card"><div class="desc">No Sui headlines found right now. Try again shortly.</div></div>';
-        pagerEl.innerHTML = '';
-        return;
-      }
-
-      renderPage(1);
-    }
-
-    loadFeeds().catch(err=>{
-      console.error(err);
-      el.innerHTML = '<div class="card"><div class="desc">Could not load feeds right now.</div></div>';
-      pagerEl.innerHTML = '';
-    });
-  })();
-  </script>
-
-  <!-- Footer include -->
-  <div id="site-footer"></div>
-  <script>
-    fetch('/kah1/footer.html')
-      .then(r => r.text())
-      .then(html => { document.getElementById('site-footer').innerHTML = html; })
-      .catch(console.error);
-  </script>
-</body>
-</html>
