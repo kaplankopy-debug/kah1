@@ -22,7 +22,7 @@
     display:flex; align-items:center; gap:24px; flex-wrap:wrap;
   }
 
-  /* Re-use header logo style, adapted for footer palette */
+  /* Refined logo — top and bottom lines perfectly balanced */
   .kah-logo-footer{
     display:flex; flex-direction:column; align-items:center; justify-content:center;
     font-family:'Inter', system-ui, sans-serif;
@@ -38,11 +38,12 @@
     text-transform:uppercase;
   }
 
+  /* Balanced razor lines */
   .kah-logo-footer::before,
   .kah-logo-footer::after{
     content:"";
     display:block;
-    height:1.5px;
+    height:1px;                      /* thinner + balanced line thickness */
     width:120%;
     background:var(--footer-line);
     position:absolute;
@@ -90,6 +91,9 @@
 
     <nav class="f-links" aria-label="Footer">
       <a href="#" title="placeholder">Contact Us</a>
+      <a href="#" title="placeholder">Media Kit</a>
+      <a href="#" title="placeholder">Legal</a>
+      <a href="#" title="placeholder">Terms of use</a>
       <a href="#" title="placeholder">Privacy policy</a>
     </nav>
   </div>
