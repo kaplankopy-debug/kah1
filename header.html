@@ -1,17 +1,13 @@
 <!-- header.html -->
 <style>
   :root {
-    /* Keep your site palette */
-    --bg:#0c0e11;                   /* page background */
+    --bg:#0c0e11;
     --sui-blue:#00baff;
     --banner-text:#d7f6ff;
     --banner-text-hover:#ffffff;
-
-    /* footer uses this gradient now */
     --footer-gradient: linear-gradient(90deg,#001b29 0%,#004a68 50%,#00baff 100%);
   }
 
-  /* Dark header, same as page bg */
   .banner {
     width:100%;
     background: var(--bg);
@@ -19,7 +15,6 @@
     position: sticky;
     top: 0;
     z-index: 1000;
-    /* faint blue demarcation line */
     border-bottom: 1px solid rgba(0,186,255,.35);
     box-shadow: 0 2px 12px rgba(0,0,0,.25);
   }
@@ -28,7 +23,6 @@
     display:flex; align-items:center; justify-content:space-between;
   }
 
-  /* Centered stacked logo */
   .kah-logo{
     display:flex; flex-direction:column; align-items:center; justify-content:center;
     font-family: 'Inter', system-ui, sans-serif; font-weight:800; line-height:1.05;
@@ -43,7 +37,6 @@
   .kah-logo::before{ top:-6px; }
   .kah-logo::after{ bottom:-6px; }
 
-  /* Banner links (right side) */
   .banner-links{
     display:flex; align-items:center; gap:18px;
     font-weight:700; text-transform:uppercase; font-size:.85rem; letter-spacing:.05em;
@@ -76,6 +69,8 @@
       <a href="company.html">Company</a>
       <span class="dot">•</span>
       <a href="media.html">Media</a>
+      <span class="dot">•</span>
+      <a href="why-sui.html">Why Sui?</a>
     </nav>
   </div>
 </div>
