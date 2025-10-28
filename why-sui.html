@@ -32,28 +32,26 @@
     filter:blur(80px) saturate(130%);opacity:var(--glow);z-index:0;
   }
 
-  /* Layout */
+  /* Layout & type */
   .wrap{max-width:1200px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
-  section{margin:72px 0}
+  section{margin:76px 0}
   h1,h2,h3{letter-spacing:-.01em}
-  h1{font-size:44px;line-height:1.12;font-weight:800;color:#eaf7ff}
-  h1 span{color:var(--sui-blue)}
-  h2{font-size:28px;line-height:1.25;font-weight:800;margin-bottom:12px;color:#eaf7ff}
-  h3{font-size:20px;font-weight:700;margin-bottom:8px;color:#dff6ff}
-  p{color:var(--muted);font-size:17px;line-height:1.75}
+  h1{font-size:46px;line-height:1.12;font-weight:800;color:#eaf7ff}
+  h1 .blue{color:var(--sui-blue)}
+  h2{font-size:30px;line-height:1.25;font-weight:800;margin-bottom:14px;color:var(--sui-blue)}
+  h3{font-size:20px;font-weight:800;margin-bottom:8px;color:#bfefff}
+  p{color:var(--muted);font-size:18px;line-height:1.9}
+  p + p{margin-top:12px}             /* extra breathing room between sentences/paras */
   .muted{color:var(--muted)}
-  .lead{font-size:18px;max-width:760px}
+  .lead{font-size:19px;max-width:780px}
+  .small{font-size:14px}
 
   /* Hero */
-  .hero{display:flex;align-items:center;justify-content:space-between;gap:48px;margin:80px 0 40px}
-  .hero .media{
-    flex:1;display:flex;justify-content:center
-  }
+  .hero{display:flex;align-items:center;justify-content:space-between;gap:48px;margin:82px 0 36px}
+  .hero .media{flex:1;display:flex;justify-content:center}
   .frame{
-    width:100%;max-width:520px;aspect-ratio:16/10;border-radius:16px;overflow:hidden;position:relative;
-    background:
-      radial-gradient(120% 120% at 10% 10%, rgba(0,186,255,.15) 0%, rgba(0,186,255,0) 60%),
-      linear-gradient(180deg,#081018 0%,#0c141c 100%);
+    width:100%;max-width:540px;aspect-ratio:16/10;border-radius:16px;overflow:hidden;position:relative;
+    background:radial-gradient(120% 120% at 10% 10%, rgba(0,186,255,.15) 0%, rgba(0,186,255,0) 60%), linear-gradient(180deg,#081018 0%,#0c141c 100%);
     box-shadow:0 0 36px rgba(0,186,255,.22), inset 0 0 40px rgba(0,186,255,.08);
     border:1px solid var(--card-border)
   }
@@ -62,46 +60,46 @@
   /* Pill */
   .pill{
     display:inline-flex;gap:10px;align-items:center;
-    background:rgba(0,186,255,.08);border:1px solid rgba(0,186,255,.22);
-    color:#bfefff;border-radius:999px;padding:8px 14px;margin-bottom:14px;font-weight:600;font-size:13px
+    background:rgba(0,186,255,.10);border:1px solid rgba(0,186,255,.28);
+    color:#c9f3ff;border-radius:999px;padding:8px 14px;margin-bottom:16px;font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase
   }
 
-  /* Two-col comparison */
-  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  /* Cards & grids */
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
   .card{
-    background:var(--card);border:1px solid var(--card-border);border-radius:16px;padding:20px;box-shadow:var(--card-shadow)
+    background:var(--card);border:1px solid var(--card-border);border-radius:16px;padding:22px;box-shadow:var(--card-shadow)
   }
-  .card h3{margin-bottom:6px}
+  .card h3{margin-bottom:8px}
   .list{margin-top:10px}
-  .list li{margin:6px 0 0 18px;color:var(--muted)}
+  .list li{margin:8px 0 0 18px;color:var(--muted)}
   .list li::marker{color:var(--sui-blue)}
 
-  /* Three examples */
-  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  /* Badges */
   .badge{
-    display:inline-block;background:rgba(0,186,255,.12);border:1px solid rgba(0,186,255,.25);
-    color:#c9f2ff;border-radius:10px;padding:4px 10px;font-size:12px;font-weight:600;margin-bottom:6px
+    display:inline-block;background:rgba(0,186,255,.14);border:1px solid rgba(0,186,255,.28);
+    color:#dbf8ff;border-radius:10px;padding:4px 10px;font-size:12px;font-weight:700;margin-bottom:8px;letter-spacing:.02em
   }
 
   /* Quote / TLDR */
   .quote{
     background:linear-gradient(180deg,#0c141c 0%,#0b1219 100%);
-    border:1px solid rgba(0,186,255,.16);border-radius:16px;padding:24px 20px;box-shadow:var(--card-shadow)
+    border:1px solid rgba(0,186,255,.16);border-radius:16px;padding:26px 22px;box-shadow:var(--card-shadow)
   }
-  blockquote{font-size:18px;line-height:1.7;color:#e8fbff}
+  blockquote{font-size:18px;line-height:1.85;color:#e8fbff}
   blockquote strong{color:var(--sui-blue)}
   .caption{font-size:13px;color:#a5cbe0;margin-top:10px}
 
   /* Callout */
   .callout{
-    background:linear-gradient(90deg, rgba(0,186,255,.08), rgba(0,128,255,.08));
-    border:1px solid rgba(0,186,255,.22);border-radius:14px;padding:16px 18px;color:#cdefff
+    background:linear-gradient(90deg, rgba(0,186,255,.10), rgba(0,128,255,.10));
+    border:1px solid rgba(0,186,255,.28);border-radius:14px;padding:16px 18px;color:#cdefff
   }
 
   /* Responsive */
   @media(max-width:1000px){.grid-3{grid-template-columns:1fr 1fr}}
   @media(max-width:900px){
-    .hero{flex-direction:column;text-align:center;margin:56px 0 24px}
+    .hero{flex-direction:column;text-align:center;margin:58px 0 18px}
     .grid-2{grid-template-columns:1fr}
     .grid-3{grid-template-columns:1fr}
     .lead{margin:0 auto}
@@ -120,12 +118,13 @@
     <section class="hero">
       <div class="text" style="flex:1">
         <div class="pill">Why Sui?</div>
-        <h1>The <span>distributed & localised city grid</span> for the next era</h1>
+        <h1><span class="blue">Sui</span> for the next era</h1>
         <p class="lead">
-          Most blockchains are super-highways — fast, but all traffic shares one road. Sui is a
-          <strong>distributed and localised city grid</strong>: millions of independent streets that scale
-          out as the city grows. That makes it uniquely fit for a world of autonomous AI agents,
-          low-latency DeFi, and real-time energy markets.
+          Sui is a Layer-1 blockchain engineered for parallel execution and sub-second finality.
+          It models everything as <strong>objects</strong> (not accounts), enabling thousands of independent actions to run at once.
+        </p>
+        <p class="lead" style="margin-top:14px">
+          This page explains Sui simply, then uses the <strong>distributed &amp; localised city grid</strong> analogy to show why it scales for AI agents, DeFi, and energy markets.
         </p>
       </div>
       <div class="media">
@@ -162,12 +161,42 @@
       </div>
     </section>
 
+    <!-- INTRO TO SUI (basic level) -->
+    <section>
+      <h2>What is Sui? (in plain English)</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Designed for parallelism</h3>
+          <p>
+            Instead of one shared account ledger, Sui treats every asset as an <strong>object</strong>. 
+            Transactions that touch different objects can execute at the same time — safely — across many validators.
+          </p>
+          <p>
+            This unlocks near-linear scale as the network adds more machines.
+          </p>
+        </div>
+        <div class="card">
+          <h3>Built with Move</h3>
+          <p>
+            Sui uses <strong>Move</strong>, a resource-centric language where digital assets cannot be duplicated by mistake.
+            The runtime knows exactly which objects a transaction touches, so it can parallelize work automatically.
+          </p>
+          <p>
+            Result: sub-second finality on everyday interactions.
+          </p>
+        </div>
+      </div>
+    </section>
+
     <!-- COMPARISON: City Grid vs Motorway -->
     <section>
-      <h2>City grid vs motorway — the core idea</h2>
-      <p class="muted" style="margin-top:6px;max-width:860px">
-        <strong>Motorway (most chains):</strong> one global state, one shared clock — ultra-fast but inevitably congested as activity compounds.<br/>
-        <strong>Sui’s city grid:</strong> independent local streets (objects) that run in parallel, syncing only at intersections (shared objects).
+      <h2>The distributed &amp; localised city grid vs the motorway</h2>
+      <p class="muted" style="margin-top:6px;max-width:900px">
+        <strong>Motorway (most chains):</strong> one global state, one shared clock — ultra-fast but inevitably congested as activity compounds.
+      </p>
+      <p class="muted" style="margin-top:8px;max-width:900px">
+        <strong>Sui’s city grid:</strong> independent local streets (objects) running in parallel, syncing only at intersections (shared objects). 
+        Add more validators and the grid expands naturally.
       </p>
 
       <div class="grid-2" style="margin-top:18px">
@@ -176,11 +205,11 @@
           <ul class="list">
             <li>Single global ledger; every app competes for the same blockspace.</li>
             <li>Parallelism limited by global coordination and hardware size (scale up).</li>
-            <li>Great for raw speed, fragile under massive concurrent, unrelated activity.</li>
+            <li>Great for raw speed, but fragile under massive unrelated concurrency.</li>
           </ul>
         </div>
         <div class="card">
-          <h3>Distributed & localised city grid (Sui)</h3>
+          <h3>Distributed &amp; localised city grid (Sui)</h3>
           <ul class="list">
             <li>Everything is an <em>object</em> with its own owner and state.</li>
             <li>Independent objects execute concurrently across validators (scale out).</li>
@@ -195,25 +224,25 @@
       <h2>Why this works: Sui’s object-oriented foundation</h2>
       <div class="grid-2" style="margin-top:10px">
         <div class="card">
-          <h3>Move language</h3>
+          <h3>Object model</h3>
           <p>
-            Sui uses <strong>Move</strong>, a resource-centric language where assets are linear and cannot be
-            duplicated. Each asset is an <strong>object</strong> with a unique ID, owner, and state. The runtime
-            can see exactly which objects a transaction touches — enabling safe, automatic parallel execution.
+            Every on-chain asset is an object with a unique ID, owner, and local state.
+            Owning an object is like owning a “street” in the city: changes to your street do not block mine.
+          </p>
+          <p>
+            Most everyday transactions skip global ordering entirely and finalize quickly.
           </p>
         </div>
         <div class="card">
           <h3>Parallel by design</h3>
           <p>
-            Transactions that modify independent objects skip global consensus and finalize in ~sub-second.
-            Only when many users interact with the <em>same shared object</em> (e.g., a public pool) does Sui
-            coordinate ordering — keeping the rest of the network free to run at full speed.
+            When many users interact with the <em>same shared object</em> (e.g., a public pool), Sui coordinates ordering just for that junction.
+            Everywhere else, the city flows freely in parallel.
           </p>
         </div>
       </div>
       <div class="callout" style="margin-top:14px">
-        In plain English: your wallet, NFT, game asset, or AI agent is its own “street.” Updates to your
-        street don’t slow down mine — that’s why the grid outscales the motorway.
+        In plain English: your wallet, NFT, game asset, or AI agent is its own “street.” Updates to your street don’t slow down mine.
       </div>
     </section>
 
@@ -225,25 +254,27 @@
           <span class="badge">AI Agent Economy</span>
           <h3>Millions of machine wallets</h3>
           <p>
-            Each AI agent pays for data, models, and services from its own object state. Agents transact
-            locally and concurrently; only shared marketplaces sync globally. Result: massive concurrency
-            without congestion.
+            Each AI agent pays for data, models, and services from its own object state.
+            Agents transact locally and concurrently; only shared marketplaces sync globally.
+            Result: massive concurrency without congestion.
           </p>
         </div>
         <div class="card">
           <span class="badge">DeFi Infrastructure</span>
           <h3>Local execution, global settlement</h3>
           <p>
-            Pools, positions, and oracles live as separate objects. Your trade updates only the objects it
-            touches; other pools continue in parallel. Result: low latency DeFi that scales like cloud.
+            Pools, positions, and oracles live as separate objects.
+            Your trade updates only the objects it touches; other pools continue in parallel.
+            Result: low-latency DeFi that scales like cloud.
           </p>
         </div>
         <div class="card">
-          <span class="badge">Energy & IoT</span>
+          <span class="badge">Energy &amp; IoT</span>
           <h3>Billions of micro-transactions</h3>
           <p>
-            Meters, EV chargers, and panels each maintain local state. They settle payments on their own
-            “streets,” reconciling regionally when needed. Result: real-time energy markets on-chain.
+            Meters, EV chargers, and panels each maintain local state.
+            They settle payments on their own “streets,” reconciling regionally when needed.
+            Result: real-time energy markets on-chain.
           </p>
         </div>
       </div>
