@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title Why Sui?</title>
+<title>Why Sui?</title>
 <meta name="description" content="Why Sui: the distributed and localised city grid for the age of AI, DeFi, and decentralised energy." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,8 +14,10 @@
     --bg:#0c0e11; --text:#d6eeff; --muted:#9bb7ce; --sui-blue:#00baff;
     --banner-bg:linear-gradient(90deg,#001b29 0%,#004a68 50%,#00baff 100%);
     --banner-text:#d7f6ff; --banner-text-hover:#ffffff;
-    --topbar-bg:#11161b; --topbar-text:#e9f8ff; --nav-pill:#141b21; --nav-pill-active:#1f2a33; --glow:.45;
-    --card:#0e1319; --card-border:rgba(0,186,255,.12); --card-shadow:0 0 36px rgba(0,186,255,.16);
+    --topbar-bg:#11161b; --topbar-text:#e9f8ff; --nav-pill:#141b21;
+    --nav-pill-active:#1f2a33; --glow:.45;
+    --card:#0e1319; --card-border:rgba(0,186,255,.12);
+    --card-shadow:0 0 36px rgba(0,186,255,.16);
     --accent:#62e5ff; --accent2:#48bfff;
   }
   *{box-sizing:border-box;margin:0;padding:0}
@@ -32,7 +34,6 @@
     filter:blur(80px) saturate(130%);opacity:var(--glow);z-index:0;
   }
 
-  /* Layout & type */
   .wrap{max-width:1200px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
   section{margin:76px 0}
   h1,h2,h3{letter-spacing:-.01em}
@@ -46,7 +47,6 @@
   .lead{font-size:19px;max-width:780px}
   .small{font-size:14px}
 
-  /* Hero */
   .hero{display:flex;align-items:center;justify-content:space-between;gap:48px;margin:82px 0 36px}
   .hero .media{flex:1;display:flex;justify-content:center}
   .frame{
@@ -57,14 +57,12 @@
   }
   svg{width:100%;height:100%;display:block}
 
-  /* Pill */
   .pill{
     display:inline-flex;gap:10px;align-items:center;
     background:rgba(0,186,255,.10);border:1px solid rgba(0,186,255,.28);
     color:#c9f3ff;border-radius:999px;padding:8px 14px;margin-bottom:16px;font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase
   }
 
-  /* Cards & grids */
   .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:22px}
   .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
   .card{
@@ -75,13 +73,11 @@
   .list li{margin:8px 0 0 18px;color:var(--muted)}
   .list li::marker{color:var(--sui-blue)}
 
-  /* Badges */
   .badge{
     display:inline-block;background:rgba(0,186,255,.14);border:1px solid rgba(0,186,255,.28);
     color:#dbf8ff;border-radius:10px;padding:4px 10px;font-size:12px;font-weight:700;margin-bottom:8px;letter-spacing:.02em
   }
 
-  /* Quote / TLDR */
   .quote{
     background:linear-gradient(180deg,#0c141c 0%,#0b1219 100%);
     border:1px solid rgba(0,186,255,.16);border-radius:16px;padding:26px 22px;box-shadow:var(--card-shadow)
@@ -90,13 +86,11 @@
   blockquote strong{color:var(--sui-blue)}
   .caption{font-size:13px;color:#a5cbe0;margin-top:10px}
 
-  /* Callout */
   .callout{
     background:linear-gradient(90deg, rgba(0,186,255,.10), rgba(0,128,255,.10));
     border:1px solid rgba(0,186,255,.28);border-radius:14px;padding:16px 18px;color:#cdefff
   }
 
-  /* Responsive */
   @media(max-width:1000px){.grid-3{grid-template-columns:1fr 1fr}}
   @media(max-width:900px){
     .hero{flex-direction:column;text-align:center;margin:58px 0 18px}
@@ -106,15 +100,22 @@
   }
 </style>
 </head>
+
 <body>
-  <!-- Shared header mount -->
+  <!-- Shared header -->
   <div id="site-header"></div>
   <script>
-    fetch('header.html').then(r=>r.text()).then(h=>{document.getElementById('site-header').innerHTML=h});
+    fetch('/kah1/header.html')
+      .then(r => r.ok ? r.text() : Promise.reject())
+      .then(h => { document.getElementById('site-header').innerHTML = h; })
+      .catch(() => {
+        fetch('header.html')
+          .then(r => r.text())
+          .then(h => { document.getElementById('site-header').innerHTML = h; });
+      });
   </script>
 
   <main class="wrap">
-    <!-- HERO -->
     <section class="hero">
       <div class="text" style="flex:1">
         <div class="pill">Why Sui?</div>
@@ -133,7 +134,6 @@
       </div>
       <div class="media">
         <div class="frame" aria-label="Sui city grid illustration">
-          <!-- Subtle animated nodes/roads (inline SVG) -->
           <svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Parallel streets">
             <defs>
               <filter id="glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
@@ -165,42 +165,29 @@
       </div>
     </section>
 
-    <!-- INTRO TO SUI (basic level) -->
     <section>
       <h2>What is Sui? (in plain English)</h2>
       <div class="grid-2">
         <div class="card">
           <h3>Designed for parallelism</h3>
-          <p>
-            Instead of one shared account ledger, Sui treats every asset as an <strong>object</strong>. 
-            Transactions that touch different objects can execute at the same time — safely — across many validators.
-          </p>
-          <p>
-            This unlocks near-linear scale as the network adds more machines.
-          </p>
+          <p>Sui treats every asset as an <strong>object</strong>. Transactions that touch different objects can execute at the same time — safely — across many validators.</p>
+          <p>This unlocks near-linear scale as the network adds more machines.</p>
         </div>
         <div class="card">
           <h3>Built with Move</h3>
-          <p>
-            Sui uses <strong>Move</strong>, a resource-centric language where digital assets cannot be duplicated by mistake.
-            The runtime knows exactly which objects a transaction touches, so it can parallelize work automatically.
-          </p>
-          <p>
-            Result: sub-second finality on everyday interactions.
-          </p>
+          <p>Sui uses <strong>Move</strong>, a resource-centric language where digital assets cannot be duplicated by mistake. The runtime knows exactly which objects a transaction touches, so it can parallelize work automatically.</p>
+          <p>Result: sub-second finality on everyday interactions.</p>
         </div>
       </div>
     </section>
 
-    <!-- COMPARISON: City Grid vs Motorway -->
     <section>
       <h2>The distributed &amp; localised city grid vs the motorway</h2>
       <p class="muted" style="margin-top:6px;max-width:900px">
         <strong>Motorway (most chains):</strong> one global state, one shared clock — ultra-fast but inevitably congested as activity compounds.
       </p>
       <p class="muted" style="margin-top:8px;max-width:900px">
-        <strong>Sui’s city grid:</strong> independent local streets (objects) running in parallel, syncing only at intersections (shared objects). 
-        Add more validators and the grid expands naturally.
+        <strong>Sui’s city grid:</strong> independent local streets (objects) running in parallel, syncing only at intersections (shared objects). Add more validators and the grid expands naturally.
       </p>
 
       <div class="grid-2" style="margin-top:18px">
@@ -209,7 +196,7 @@
           <ul class="list">
             <li>Single global ledger; every app competes for the same blockspace.</li>
             <li>Parallelism limited by global coordination and hardware size (scale up).</li>
-            <li>Great for raw speed, but fragile under massive unrelated concurrency.</li>
+            <li>Fast but fragile under massive unrelated concurrency.</li>
           </ul>
         </div>
         <div class="card">
@@ -223,26 +210,17 @@
       </div>
     </section>
 
-    <!-- OBJECT-ORIENTED RUNTIME -->
     <section>
       <h2>Why this works: Sui’s object-oriented foundation</h2>
       <div class="grid-2" style="margin-top:10px">
         <div class="card">
           <h3>Object model</h3>
-          <p>
-            Every on-chain asset is an object with a unique ID, owner, and local state.
-            Owning an object is like owning a “street” in the city: changes to your street do not block mine.
-          </p>
-          <p>
-            Most everyday transactions skip global ordering entirely and finalize quickly.
-          </p>
+          <p>Every on- chain asset is an object with a unique ID, owner, and local state. Owning an object is like owning a “street” in the city: changes to your street do not block mine.</p>
+          <p>Most everyday transactions skip global ordering entirely and finalize quickly.</p>
         </div>
         <div class="card">
           <h3>Parallel by design</h3>
-          <p>
-            When many users interact with the <em>same shared object</em> (e.g., a public pool), Sui coordinates ordering just for that junction.
-            Everywhere else, the city flows freely in parallel.
-          </p>
+          <p>When many users interact with the same shared object (e.g., a public pool), Sui coordinates ordering just for that junction. Everywhere else, the city flows freely in parallel.</p>
         </div>
       </div>
       <div class="callout" style="margin-top:14px">
@@ -250,64 +228,47 @@
       </div>
     </section>
 
-    <!-- THREE CONCRETE EXAMPLES -->
     <section>
       <h2>Three concrete examples</h2>
       <div class="grid-3" style="margin-top:12px">
         <div class="card">
           <span class="badge">AI Agent Economy</span>
           <h3>Millions of machine wallets</h3>
-          <p>
-            Each AI agent pays for data, models, and services from its own object state.
-            Agents transact locally and concurrently; only shared marketplaces sync globally.
-            Result: massive concurrency without congestion.
-          </p>
+          <p>Each AI agent pays for data, models, and services from its own object state. Agents transact locally and concurrently; only shared marketplaces sync globally.</p>
         </div>
         <div class="card">
           <span class="badge">DeFi Infrastructure</span>
           <h3>Local execution, global settlement</h3>
-          <p>
-            Pools, positions, and oracles live as separate objects.
-            Your trade updates only the objects it touches; other pools continue in parallel.
-            Result: low-latency DeFi that scales like cloud.
-          </p>
+          <p>Pools, positions, and oracles live as separate objects. Your trade updates only the objects it touches; other pools continue in parallel.</p>
         </div>
         <div class="card">
           <span class="badge">Energy &amp; IoT</span>
           <h3>Billions of micro-transactions</h3>
-          <p>
-            Meters, EV chargers, and panels each maintain local state.
-            They settle payments on their own “streets,” reconciling regionally when needed.
-            Result: real-time energy markets on-chain.
-          </p>
+          <p>Meters, EV chargers, and panels each maintain local state. They settle payments on their own “streets,” reconciling regionally when needed.</p>
         </div>
       </div>
     </section>
 
-    <!-- TL;DR QUOTE -->
     <section>
       <div class="quote">
         <blockquote>
           <strong>TL;DR:</strong> Most chains are super-highways — fast, but every car uses the same road.
-          <strong> Sui is a distributed and localised city grid</strong>: millions of independent streets that
-          expand as the city grows. In a world of autonomous AI, composable finance, and decentralised energy,
-          the grid outscales the motorway.
+          <strong> Sui is a distributed and localised city grid</strong>: millions of independent streets that expand as the city grows. In a world of autonomous AI, composable finance, and decentralised energy, the grid outscales the motorway.
         </blockquote>
         <div class="caption">Kaplan Asset Holdings — Why we build on Sui</div>
       </div>
     </section>
   </main>
 
-  <!-- Shared footer -->
   <div id="site-footer"></div>
   <script>
-    // Use a root-relative path if your site is under /kah1/
     fetch('/kah1/footer.html')
-      .then(r => r.text())
-      .then(html => { document.getElementById('site-footer').innerHTML = html; })
+      .then(r => r.ok ? r.text() : Promise.reject())
+      .then(h => { document.getElementById('site-footer').innerHTML = h; })
       .catch(() => {
-        // Fallback if served from repo root
-        fetch('footer.html').then(r=>r.text()).then(h=>{document.getElementById('site-footer').innerHTML=h});
+        fetch('footer.html')
+          .then(r => r.text())
+          .then(h => { document.getElementById('site-footer').innerHTML = h; });
       });
   </script>
 </body>
