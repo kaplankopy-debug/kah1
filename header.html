@@ -19,37 +19,75 @@
     box-shadow: 0 2px 12px rgba(0,0,0,.25);
   }
   .banner .inner{
-    max-width:1200px; margin:0 auto; padding:10px 24px;
-    display:flex; align-items:center; justify-content:space-between;
+    max-width:1200px;
+    margin:0 auto;
+    padding:10px 24px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
   }
 
   .kah-logo{
-    display:flex; flex-direction:column; align-items:center; justify-content:center;
-    font-family: 'Inter', system-ui, sans-serif; font-weight:800; line-height:1.05;
-    color:#fff; letter-spacing:-.5px; text-align:center; position:relative;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-weight:800;
+    line-height:1.05;
+    color:#fff;
+    letter-spacing:-.5px;
+    text-align:center;
+    position:relative;
   }
-  .kah-logo span{ display:block; font-size:.95rem; text-transform:uppercase; }
-  .kah-logo::before, .kah-logo::after{
-    content:""; display:block; height:1.5px; width:120%;
+  .kah-logo span{
+    display:block;
+    font-size:.95rem;
+    text-transform:uppercase;
+  }
+  .kah-logo::before,
+  .kah-logo::after{
+    content:"";
+    display:block;
+    height:1.5px;
+    width:120%;
     background: var(--sui-blue);
-    position:absolute; left:50%; transform:translateX(-50%);
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
   }
   .kah-logo::before{ top:-6px; }
   .kah-logo::after{ bottom:-6px; }
 
   .banner-links{
-    display:flex; align-items:center; gap:18px;
-    font-weight:700; text-transform:uppercase; font-size:.85rem; letter-spacing:.05em;
+    display:flex;
+    align-items:center;
+    gap:18px;
+    font-weight:700;
+    text-transform:uppercase;
+    font-size:.85rem;
+    letter-spacing:.05em;
   }
   .banner-links a{
-    color:var(--banner-text); text-decoration:none; opacity:.9;
+    color:var(--banner-text);
+    text-decoration:none;
+    opacity:.9;
     transition: color .2s ease, opacity .2s ease;
   }
-  .banner-links a:hover{ color:var(--banner-text-hover); opacity:1; }
-  .banner-links .dot{ opacity:.5; user-select:none; }
+  .banner-links a:hover{
+    color:var(--banner-text-hover);
+    opacity:1;
+  }
+  .banner-links .dot{
+    opacity:.5;
+    user-select:none;
+  }
 
   @media (max-width:640px){
-    .banner .inner{ flex-direction:column; gap:10px; }
+    .banner .inner{
+      flex-direction:column;
+      gap:10px;
+    }
   }
 </style>
 
@@ -62,15 +100,15 @@
     </div>
 
     <nav class="banner-links" aria-label="Top">
-      <a href="index.html">Analytics</a>
+      <a href="/kah1/index.html">Analytics</a>
       <span class="dot">•</span>
-      <a href="purchases.html">Purchases</a>
+      <a href="/kah1/purchases.html">Purchases</a>
       <span class="dot">•</span>
-      <a href="company.html">Company</a>
+      <a href="/kah1/company.html">Company</a>
       <span class="dot">•</span>
-      <a href="media.html">Media</a>
+      <a href="/kah1/media.html">Media</a>
       <span class="dot">•</span>
-      <a href="why-sui.html">Why Sui?</a>
+      <a href="/kah1/why-sui.html">Why Sui?</a>
     </nav>
   </div>
 </div>
