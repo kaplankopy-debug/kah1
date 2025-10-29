@@ -47,6 +47,16 @@
   .lead{font-size:19px;max-width:780px}
   .small{font-size:14px}
 
+  /* Mini section headers in Sui blue */
+  .mini{
+    color:var(--sui-blue);
+    font-weight:800;
+    font-size:14px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    margin:18px 0 6px;
+  }
+
   .hero{display:flex;align-items:center;justify-content:space-between;gap:48px;margin:82px 0 36px}
   .hero .media{flex:1;display:flex;justify-content:center}
   .frame{
@@ -120,21 +130,25 @@
       <div class="text" style="flex:1">
         <div class="pill">Why Sui?</div>
         <h1>Why <span class="blue">Sui</span></h1>
-         </p>
+
+        <div class="mini">Built for Parallel Execution</div>
         <p class="lead">
           Sui is a Layer-1 blockchain engineered for parallel execution and sub-second finality.
           It models everything as <strong>objects</strong> (not accounts), enabling thousands of independent actions to run at once.
         </p>
-        <p class="lead" style="margin-top:14px">
+
+        <div class="mini">Why It Matters Now</div>
+        <p class="lead" style="margin-top:6px">
           Because its <strong>object-based, horizontally scalable</strong> architecture lets millions of users, agents, and devices operate concurrently without congestion, 
           Sui is uniquely positioned to be the <strong>execution layer for the next internet</strong>—an economy of AI, assets, and energy that demands real-time, local-to-global coordination.
         </p>
-        <p class="lead" style="margin-top:14px">
-          This page explains Sui simply, from first principles, and uses the <strong>distributed &amp; localised city grid</strong> analogy to showcase some
-          examples highlighting why it is the best suited option for industries such as energy markets, DeFi and AI agents due to its architecture that innately
-          positions it for inherent scaling, compared to other technologies requiriing post-hoc updates and add-ons as demand increases.
+
+        <div class="mini">What This Page Covers</div>
+        <p class="lead" style="margin-top:6px">
+          This page explains Sui from first principles and uses the <strong>distributed &amp; localised city grid</strong> analogy to show why it scales for energy markets, DeFi, and AI agents—thanks to an architecture that scales <em>by design</em>, not via post-hoc add-ons.
         </p>
       </div>
+
       <div class="media">
         <div class="frame" aria-label="Sui city grid illustration">
           <svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Parallel streets">
@@ -218,7 +232,7 @@
       <div class="grid-2" style="margin-top:10px">
         <div class="card">
           <h3>Object model</h3>
-          <p>Every on- chain asset is an object with a unique ID, owner, and local state. Owning an object is like owning a “street” in the city: changes to your street do not block mine.</p>
+          <p>Every on-chain asset is an object with a unique ID, owner, and local state. Owning an object is like owning a “street” in the city: changes to your street do not block mine.</p>
           <p>Most everyday transactions skip global ordering entirely and finalize quickly.</p>
         </div>
         <div class="card">
