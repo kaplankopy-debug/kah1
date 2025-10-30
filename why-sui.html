@@ -28,15 +28,28 @@
       radial-gradient(60% 60% at 30% 70%, rgba(0,128,255,.25) 0%, rgba(0,128,255,0) 70%);
     filter:blur(80px) saturate(130%);opacity:.45;z-index:0;
   }
+
   .wrap{max-width:1200px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
   section{margin:76px 0}
+
   h1,h2,h3{letter-spacing:-.01em}
   h1{font-size:46px;line-height:1.12;font-weight:800;color:#eaf7ff;margin-bottom:6px}
   h1 .blue{color:var(--sui-blue)}
   h2{font-size:30px;line-height:1.25;font-weight:800;margin-bottom:14px;color:var(--sui-blue)}
   h3{font-size:22px;font-weight:800;margin:26px 0 10px;color:var(--sui-blue)}
-  p{color:var(--muted);font-size:18px;line-height:1.9}
-  p + p{margin-top:12px}
+
+  /* refined typography like strategy.com */
+  p{
+    color:var(--muted);
+    font-size:17px;
+    line-height:1.75;
+    margin-bottom:16px;
+  }
+  .lead{
+    font-size:18.5px;
+    line-height:1.8;
+    margin-bottom:20px;
+  }
 
   .small-img{
     float:right;
@@ -51,10 +64,12 @@
     margin:6px 16px 10px 0;
   }
 
-  .card{background:var(--card);border:1px solid var(--card-border);border-radius:16px;padding:22px;box-shadow:var(--card-shadow);overflow:hidden}
+  .card{background:var(--card);border:1px solid var(--card-border);
+    border-radius:16px;padding:22px;box-shadow:var(--card-shadow);overflow:hidden}
   .callout{
     background:linear-gradient(90deg, rgba(0,186,255,.10), rgba(0,128,255,.10));
-    border:1px solid rgba(0,186,255,.28);border-radius:14px;padding:16px 18px;color:#cdefff
+    border:1px solid rgba(0,186,255,.28);border-radius:14px;
+    padding:16px 18px;color:#cdefff;margin:20px 0
   }
 
   .compare{display:grid;grid-template-columns:1fr 1fr;border:1px solid rgba(0,186,255,.25);
@@ -62,8 +77,9 @@
   .compare div{padding:14px 18px;font-size:16px;line-height:1.7;border-bottom:1px solid rgba(0,186,255,.1)}
   .compare div:nth-child(odd){background:rgba(0,186,255,.05)}
   .compare-header{
-    background:rgba(0,186,255,.15);color:var(--sui-blue);font-weight:800;text-transform:uppercase;
-    letter-spacing:.05em;border-bottom:1px solid rgba(0,186,255,.25)
+    background:rgba(0,186,255,.15);color:var(--sui-blue);
+    font-weight:800;text-transform:uppercase;letter-spacing:.05em;
+    border-bottom:1px solid rgba(0,186,255,.25)
   }
 
   .hero{display:flex;align-items:center;justify-content:space-between;gap:48px;margin:82px 0 36px}
@@ -81,9 +97,8 @@
     color:#c9f3ff;border-radius:999px;padding:8px 14px;margin-bottom:16px;
     font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase
   }
-  .mini{color:var(--sui-blue);font-weight:800;font-size:14px;text-transform:uppercase;margin:22px 0 8px}
-  .lead{font-size:19px;max-width:780px}
-
+  .mini{color:var(--sui-blue);font-weight:800;font-size:14px;
+    text-transform:uppercase;margin:22px 0 8px}
   @media(max-width:900px){
     .hero{flex-direction:column;text-align:center;margin:58px 0 18px}
     .compare{grid-template-columns:1fr}
@@ -105,19 +120,18 @@
 
   <!-- PRIMER SECTION AT THE TOP -->
   <section style="margin-top:40px">
-    <h2>A Primer on <span class="blue">Sui</span></h2>
+    <h2 style="padding-left:4px">A Primer on <span class="blue">Sui</span></h2>
     <div class="card" style="margin-top:10px">
       <p>
-        To appreciate Sui’s breakthrough—and why it’s best positioned as the new layer of the internet—the key concept to understand is its
-        <strong>object-oriented language</strong>. This one thing will unlock the majority of what needs to be understood about the Sui network
-        and help non-technical readers grasp key terms like 'parallelism' and why this matters.
+        To appreciate Sui’s breakthrough—and why it’s best positioned as the new layer of the internet—the key principle to understand is its
+        <strong>object-oriented language</strong>. This helps non-technical readers intuitively grasp why Sui is architected differently.
       </p>
 
       <h3>The Global-Ledger Model</h3>
       <p>
         <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=400&q=60" class="small-img left" alt="Single ledger book on desk representing one shared record">
         Most blockchains operate on a single <strong>global ledger</strong>. When any object performs an action
-        (an object can be a piece of data, NFT, game move, message etc.), that event must be recorded sequentially on that 
+        (an object can be a piece of data, NFT, game move, or message), that event must be recorded sequentially on that 
         global ledger alongside all other global actions. Under heavy use, this creates congestion—like a <strong>one-lane motorway</strong> where every car must queue in order.
       </p>
 
