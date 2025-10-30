@@ -14,54 +14,55 @@
     --bg:#0c0e11; --text:#d6eeff; --muted:#9bb7ce; --sui-blue:#00baff;
     --banner-bg:linear-gradient(90deg,#001b29 0%,#004a68 50%,#00baff 100%);
     --banner-text:#d7f6ff; --banner-text-hover:#ffffff;
-    --topbar-bg:#11161b; --topbar-text:#e9f8ff; --nav-pill:#141b21;
-    --nav-pill-active:#1f2a33; --glow:.45;
     --card:#0e1319; --card-border:rgba(0,186,255,.12);
     --card-shadow:0 0 36px rgba(0,186,255,.16);
-    --accent:#62e5ff; --accent2:#48bfff;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   body{
-    background:var(--bg); color:var(--text);
+    background:var(--bg);color:var(--text);
     font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-    -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; position:relative;
+    -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
   }
   body::before{
-    content:"";position:fixed;top:-200px;right:-200px;width:620px;height:620px;pointer-events:none;
+    content:"";position:fixed;top:-200px;right:-200px;width:620px;height:620px;
     background:
       radial-gradient(40% 40% at 70% 30%, rgba(56,232,255,.25) 0%, rgba(56,232,255,0) 70%),
       radial-gradient(60% 60% at 30% 70%, rgba(0,128,255,.25) 0%, rgba(0,128,255,0) 70%);
-    filter:blur(80px) saturate(130%);opacity:var(--glow);z-index:0;
+    filter:blur(80px) saturate(130%);opacity:.45;z-index:0;
   }
-
   .wrap{max-width:1200px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
   section{margin:76px 0}
   h1,h2,h3{letter-spacing:-.01em}
-  h1{font-size:46px;line-height:1.12;font-weight:800;color:#eaf7ff;margin-bottom:6px;}
+  h1{font-size:46px;line-height:1.12;font-weight:800;color:#eaf7ff;margin-bottom:6px}
   h1 .blue{color:var(--sui-blue)}
   h2{font-size:30px;line-height:1.25;font-weight:800;margin-bottom:14px;color:var(--sui-blue)}
   h3{font-size:20px;font-weight:800;margin-bottom:8px;color:#bfefff}
   p{color:var(--muted);font-size:18px;line-height:1.9}
   p + p{margin-top:12px}
-  .muted{color:var(--muted)}
-  .lead{font-size:19px;max-width:780px}
-  .small{font-size:14px}
 
-  .mini{
-    color:var(--sui-blue);font-weight:800;font-size:14px;letter-spacing:.08em;
-    text-transform:uppercase;margin:22px 0 8px;
+  .card{background:var(--card);border:1px solid var(--card-border);border-radius:16px;padding:22px;box-shadow:var(--card-shadow)}
+  .callout{
+    background:linear-gradient(90deg, rgba(0,186,255,.10), rgba(0,128,255,.10));
+    border:1px solid rgba(0,186,255,.28);border-radius:14px;padding:16px 18px;color:#cdefff
   }
-  h1 + .mini{ margin-top:26px; }
+
+  .compare{display:grid;grid-template-columns:1fr 1fr;border:1px solid rgba(0,186,255,.25);
+    border-radius:14px;overflow:hidden;margin-top:20px}
+  .compare div{padding:14px 18px;font-size:16px;line-height:1.7;border-bottom:1px solid rgba(0,186,255,.1)}
+  .compare div:nth-child(odd){background:rgba(0,186,255,.05)}
+  .compare-header{
+    background:rgba(0,186,255,.15);color:var(--sui-blue);font-weight:800;text-transform:uppercase;
+    letter-spacing:.05em;border-bottom:1px solid rgba(0,186,255,.25)
+  }
 
   .hero{display:flex;align-items:center;justify-content:space-between;gap:48px;margin:82px 0 36px}
   .hero .media{flex:1;display:flex;justify-content:center}
   .frame{
-    width:100%;max-width:540px;aspect-ratio:16/10;border-radius:16px;overflow:hidden;position:relative;
-    background:radial-gradient(120% 120% at 10% 10%, rgba(0,186,255,.15) 0%, rgba(0,186,255,0) 60%), linear-gradient(180deg,#081018 0%,#0c141c 100%);
-    box-shadow:0 0 36px rgba(0,186,255,.22), inset 0 0 40px rgba(0,186,255,.08);
-    border:1px solid var(--card-border)
+    width:100%;max-width:540px;aspect-ratio:16/10;border-radius:16px;overflow:hidden;
+    background:radial-gradient(120% 120% at 10% 10%, rgba(0,186,255,.15) 0%, rgba(0,186,255,0) 60%),
+               linear-gradient(180deg,#081018 0%,#0c141c 100%);
+    border:1px solid var(--card-border);box-shadow:0 0 36px rgba(0,186,255,.22)
   }
-  svg{width:100%;height:100%;display:block}
 
   .pill{
     display:inline-flex;gap:10px;align-items:center;
@@ -69,159 +70,105 @@
     color:#c9f3ff;border-radius:999px;padding:8px 14px;margin-bottom:16px;
     font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase
   }
-
-  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:22px}
-  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
-  .card{background:var(--card);border:1px solid var(--card-border);border-radius:16px;padding:22px;box-shadow:var(--card-shadow)}
-  .card h3{margin-bottom:8px}
-  .list{margin-top:10px}
-  .list li{margin:8px 0 0 18px;color:var(--muted)}
-  .list li::marker{color:var(--sui-blue)}
-
-  .badge{
-    display:inline-block;background:rgba(0,186,255,.14);border:1px solid rgba(0,186,255,.28);
-    color:#dbf8ff;border-radius:10px;padding:4px 10px;font-size:12px;font-weight:700;margin-bottom:8px;letter-spacing:.02em
-  }
-
-  .quote{
-    background:linear-gradient(180deg,#0c141c 0%,#0b1219 100%);
-    border:1px solid rgba(0,186,255,.16);border-radius:16px;padding:26px 22px;box-shadow:var(--card-shadow)
-  }
-  blockquote{font-size:18px;line-height:1.85;color:#e8fbff}
-  blockquote strong{color:var(--sui-blue)}
-  .caption{font-size:13px;color:#a5cbe0;margin-top:10px}
-
-  .callout{
-    background:linear-gradient(90deg, rgba(0,186,255,.10), rgba(0,128,255,.10));
-    border:1px solid rgba(0,186,255,.28);border-radius:14px;padding:16px 18px;color:#cdefff
-  }
-
-  /* Comparison table */
-  .compare{
-    display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid rgba(0,186,255,.25);
-    border-radius:14px;overflow:hidden;margin-top:20px;
-  }
-  .compare div{
-    padding:14px 18px;font-size:16px;line-height:1.7;border-bottom:1px solid rgba(0,186,255,.1);
-  }
-  .compare div:nth-child(odd){background:rgba(0,186,255,.05);}
-  .compare-header{
-    background:rgba(0,186,255,.15);
-    color:var(--sui-blue);font-weight:800;text-transform:uppercase;letter-spacing:.05em;
-    border-bottom:1px solid rgba(0,186,255,.25);
-  }
+  .mini{color:var(--sui-blue);font-weight:800;font-size:14px;text-transform:uppercase;margin:22px 0 8px}
+  .lead{font-size:19px;max-width:780px}
 
   @media(max-width:900px){
     .hero{flex-direction:column;text-align:center;margin:58px 0 18px}
-    .grid-2,.grid-3{grid-template-columns:1fr}
     .compare{grid-template-columns:1fr}
   }
 </style>
 </head>
 
 <body>
-  <!-- Shared header -->
-  <div id="site-header"></div>
-  <script>
-    fetch('/kah1/header.html')
-      .then(r => r.ok ? r.text() : Promise.reject())
-      .then(h => { document.getElementById('site-header').innerHTML = h; })
-      .catch(() => {
-        fetch('header.html').then(r=>r.text()).then(h=>{ document.getElementById('site-header').innerHTML = h; });
-      });
-  </script>
+<div id="site-header"></div>
+<script>
+  fetch('/kah1/header.html')
+    .then(r => r.ok ? r.text() : Promise.reject())
+    .then(h => { document.getElementById('site-header').innerHTML = h; })
+    .catch(() => { fetch('header.html').then(r=>r.text()).then(h=>{document.getElementById('site-header').innerHTML=h;}); });
+</script>
 
-  <main class="wrap">
-    <!-- HERO -->
-    <section class="hero">
-      <div class="text" style="flex:1">
-        <div class="pill">Why Sui?</div>
-        <h1>Why <span class="blue">Sui</span></h1>
+<main class="wrap">
 
-        <div class="mini">Built for Parallel Execution</div>
-        <p class="lead">
-          Sui is a Layer-1 blockchain engineered for parallel execution and sub-second finality.
-          It models everything as <strong>objects</strong> (not accounts), enabling thousands of independent actions to run at once.
-        </p>
+  <!-- 80/20 SECTION AT THE TOP -->
+  <section style="margin-top:40px">
+    <h2>The 80/20 of <span class="blue">Sui</span></h2>
+    <div class="card" style="margin-top:10px">
+      <p>
+        To appreciate Sui’s breakthrough—and why it’s best positioned as the new layer of the internet—the core idea to grasp is its
+        <strong>object-oriented</strong> language.
+      </p>
+      <p>
+        Other blockchains (e.g. <em>Solana, Ethereum, Cardano</em>) operate on a single <strong>global ledger</strong>. When any object performs an action
+        (data, NFT, game move, message, etc.), that event must be recorded sequentially on that ledger, together with all other global actions.
+        Under heavy use, this causes congestion—like a <strong>one-lane motorway</strong> where every car must queue in order.
+      </p>
+      <p>
+        <strong>Sui changes this.</strong> Because it uses an object-oriented design, each object maintains its own
+        <em>self-contained history</em>—its own miniature ledger. When an object acts, it doesn’t have to wait for or coordinate with every other object globally.
+      </p>
+      <p class="callout" style="margin-top:12px">
+        <strong>No single lane, no global queue:</strong> each object records its own data. Actions proceed in parallel, not in sequence.
+      </p>
+      <p style="margin-top:12px">
+        The implications for <strong>scalability and execution</strong> are enormous. This <em>localised, modular scalability</em> built into Sui’s architecture
+        makes it the digital landmass on which Web3—and future AI and energy economies—can grow.
+      </p>
 
-        <div class="mini">Why It Matters Now</div>
-        <p class="lead" style="margin-top:6px">
-          Because its <strong>object-based, horizontally scalable</strong> architecture lets millions of users, agents, and devices operate concurrently without congestion, 
-          Sui is uniquely positioned to be the <strong>execution layer for the next internet</strong>—an economy of AI, assets, and energy that demands real-time, local-to-global coordination.
-        </p>
-
-        <div class="mini">What This Page Covers</div>
-        <p class="lead" style="margin-top:6px">
-          This page explains Sui from first principles and uses the <strong>distributed &amp; localised city grid</strong> analogy to show why it scales for energy markets, DeFi, and AI agents—thanks to an architecture that scales <em>by design</em>, not via post-hoc add-ons.
-        </p>
+      <div class="compare">
+        <div class="compare-header">Global Ledger (Traditional Chains)</div>
+        <div class="compare-header">Sui Object Model</div>
+        <div>Single shared ledger for all activity</div>
+        <div>Each object keeps its own local ledger</div>
+        <div>Sequential global ordering required</div>
+        <div>Independent parallel execution</div>
+        <div>Congestion increases with usage</div>
+        <div>Throughput scales as validators increase</div>
+        <div>Global coordination = bottleneck</div>
+        <div>Only local intersections need coordination</div>
+        <div>“One highway, one queue”</div>
+        <div>“Millions of independent streets”</div>
       </div>
+    </div>
+  </section>
 
-      <div class="media">
-        <div class="frame" aria-label="Sui city grid illustration">
-          <!-- SVG omitted for brevity (keep your current one) -->
-        </div>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="text" style="flex:1">
+      <div class="pill">Why Sui?</div>
+      <h1>Why <span class="blue">Sui</span></h1>
+
+      <div class="mini">Built for Parallel Execution</div>
+      <p class="lead">
+        Sui is a Layer-1 blockchain engineered for parallel execution and sub-second finality.
+        It models everything as <strong>objects</strong> (not accounts), enabling thousands of independent actions to run at once.
+      </p>
+
+      <div class="mini">Why It Matters Now</div>
+      <p class="lead">
+        Because its <strong>object-based, horizontally scalable</strong> architecture lets millions of users, agents, and devices operate concurrently,
+        Sui is uniquely positioned as the <strong>execution layer for the next internet</strong>—an economy of AI, assets, and energy requiring real-time coordination.
+      </p>
+    </div>
+
+    <div class="media">
+      <div class="frame" aria-label="Sui city grid illustration">
+        <!-- keep your SVG graphic here -->
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- NEW: 80/20 SECTION -->
-    <section>
-      <h2>The 80/20 of <span class="blue">Sui</span></h2>
-      <div class="card" style="margin-top:10px">
-        <p>
-          To grasp Sui’s key breakthrough—and why it’s positioned as a new execution layer for the internet—the core idea is its
-          <strong>object-oriented</strong> design.
-        </p>
-        <p>
-          Most blockchains (e.g., <em>Solana, Ethereum, Cardano</em>) are built around a <strong>global ledger</strong>. When an object performs an action
-          (a piece of data, an NFT, a game move, a message, etc.), that action is recorded <em>sequentially</em> on the same ledger alongside all other
-          actions everywhere. Under high usage, this creates contention—like a <strong>single-lane motorway</strong> where every car must pass in order.
-        </p>
-        <p>
-          <strong>Sui changes this.</strong> With an object-oriented runtime, each object maintains its own <em>self-contained</em> history—its own “ledger.”
-          When that object acts, it doesn’t need to be synchronised into a single global sequence relative to all other unrelated actions on the network.
-        </p>
-        <p class="callout" style="margin-top:12px">
-          <strong>No single lane, no global queue:</strong> the “cars” (actions) don’t need to be ordered behind one another.
-          Each object carries its own state and history, so unrelated activity proceeds in parallel without blocking.
-        </p>
-        <p style="margin-top:12px">
-          The implications for <strong>scaling and execution</strong> are significant: Sui’s <em>localised, modular</em> scalability is built into the architecture,
-          positioning it as the digital landmass on which Web3 apps—and increasingly AI and energy-market primitives—can be built.
-        </p>
+  <!-- (Rest of your existing sections stay the same below) -->
 
-        <!-- COMPARISON TABLE -->
-        <div class="compare">
-          <div class="compare-header">Global Ledger (Traditional Chains)</div>
-          <div class="compare-header">Sui Object Model</div>
+</main>
 
-          <div>Single shared ledger for all activity</div>
-          <div>Each object maintains its own local ledger</div>
-
-          <div>Sequential global ordering required</div>
-          <div>Independent parallel execution</div>
-
-          <div>Congestion rises with network usage</div>
-          <div>Throughput scales linearly with more validators</div>
-
-          <div>Global coordination = bottleneck</div>
-          <div>Local coordination only where objects intersect</div>
-
-          <div>“One highway, one queue”</div>
-          <div>“Millions of independent streets”</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- The rest of your sections (What is Sui, City Grid, etc.) remain unchanged -->
-    <!-- ... -->
-  </main>
-
-  <div id="site-footer"></div>
-  <script>
-    fetch('/kah1/footer.html')
-      .then(r=>r.ok?r.text():Promise.reject())
-      .then(h=>{document.getElementById('site-footer').innerHTML=h;})
-      .catch(()=>{fetch('footer.html').then(r=>r.text()).then(h=>{document.getElementById('site-footer').innerHTML=h;});});
-  </script>
+<div id="site-footer"></div>
+<script>
+  fetch('/kah1/footer.html')
+    .then(r=>r.ok?r.text():Promise.reject())
+    .then(h=>{document.getElementById('site-footer').innerHTML=h;})
+    .catch(()=>{fetch('footer.html').then(r=>r.text()).then(h=>{document.getElementById('site-footer').innerHTML=h;});});
+</script>
 </body>
 </html>
