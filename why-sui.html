@@ -37,8 +37,21 @@
   h3{font-size:22px;font-weight:800;margin:26px 0 10px;color:var(--sui-blue)}
   p{color:var(--muted);font-size:18px;line-height:1.9}
   p + p{margin-top:12px}
-  img{width:100%;border-radius:12px;margin:18px 0;box-shadow:0 0 24px rgba(0,186,255,.1)}
-  .card{background:var(--card);border:1px solid var(--card-border);border-radius:16px;padding:22px;box-shadow:var(--card-shadow)}
+
+  .small-img{
+    float:right;
+    margin:6px 0 10px 16px;
+    max-width:180px;
+    border-radius:12px;
+    opacity:.85;
+    box-shadow:0 0 16px rgba(0,186,255,.1);
+  }
+  .small-img.left{
+    float:left;
+    margin:6px 16px 10px 0;
+  }
+
+  .card{background:var(--card);border:1px solid var(--card-border);border-radius:16px;padding:22px;box-shadow:var(--card-shadow);overflow:hidden}
   .callout{
     background:linear-gradient(90deg, rgba(0,186,255,.10), rgba(0,128,255,.10));
     border:1px solid rgba(0,186,255,.28);border-radius:14px;padding:16px 18px;color:#cdefff
@@ -74,6 +87,7 @@
   @media(max-width:900px){
     .hero{flex-direction:column;text-align:center;margin:58px 0 18px}
     .compare{grid-template-columns:1fr}
+    .small-img,.small-img.left{float:none;display:block;margin:14px auto;max-width:220px}
   }
 </style>
 </head>
@@ -99,31 +113,31 @@
       </p>
 
       <h3>The Global-Ledger Model</h3>
-      <img src="https://images.unsplash.com/photo-1529070538774-1843cb3265df?auto=format&fit=crop&w=1000&q=80" alt="Traffic congestion analogy">
       <p>
+        <img src="https://images.unsplash.com/photo-1529070538774-1843cb3265df?auto=format&fit=crop&w=400&q=60" class="small-img left" alt="Traffic congestion analogy">
         Other blockchains operate on a single <strong>global ledger</strong>. When any object performs an action
         (an object is a piece of data, NFT, a move in a game, message, etc.), that event must be recorded sequentially on that 
-       single global ledger alongside all other global actions. Under heavy use, this creates congestion—like a <strong>one-lane motorway</strong> where every car must queue in order.
+        single global ledger alongside all other global actions. Under heavy use, this creates congestion—like a <strong>one-lane motorway</strong> where every car must queue in order.
       </p>
 
       <h3>Sui Changes This</h3>
-      <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1000&q=80" alt="Network nodes representing Sui object model">
       <p>
+        <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=400&q=60" class="small-img right" alt="Network nodes representing Sui object model">
         <strong>Sui</strong> uses an object-oriented design where each object maintains its own <em>self-contained history</em>—its own miniature ledger so 
         to speak. When an object performs an action, it doesn’t need to coordinate with unrelated objects across the network or ensure its action is placed in the right sequence globally.
       </p>
-      <p class="callout">
+      <p class="callout" style="clear:both">
         <strong>No single lane, no global queue:</strong> each object records its own data and actions proceed in parallel—not in sequence (parallelism).
       </p>
 
       <h3>The Implication</h3>
-      <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1000&q=80" alt="Futuristic city skyline for scalability">
       <p>
+        <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=400&q=60" class="small-img left" alt="Futuristic city skyline for scalability">
         The implications for <strong>scalability and execution</strong> are enormous. This <em>localised, modular scalability</em> built into Sui’s architecture
         makes it the digital landmass on which Web3—and future AI and energy economies—can grow.
       </p>
 
-      <div class="compare">
+      <div class="compare" style="clear:both">
         <div class="compare-header">Global Ledger (Traditional Chains)</div>
         <div class="compare-header">Sui Object Model</div>
         <div>Single shared ledger for all activity</div>
