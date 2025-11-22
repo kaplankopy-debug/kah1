@@ -46,7 +46,7 @@
     .summary-panel strong{color:#eaf7ff}
     .summary-panel span{margin-right:18px;display:inline-block;margin-bottom:4px}
 
-    .table-wrap{width:100%;overflow:auto;border:1px solid var(--divider);border-radius:12px;background:var(--table-bg);box-shadow:0 8px 28px rgba(0,0,0,.35);margin-bottom:28px}
+    .table-wrap{width:100%;overflow:auto;border:1px solid var(--divider);border-radius:12px;background:var(--table-bg);box-shadow:0 8px 28px rgba(0,0,0,.35)}
     table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
     thead th{text-align:left;font-size:.85rem;color:#a9c3da;font-weight:700;padding:14px 16px;background:var(--thead-bg);border-bottom:1px solid var(--divider)}
     tbody td{padding:14px 16px;border-bottom:1px solid var(--divider);white-space:nowrap;vertical-align:middle;color:var(--text)}
@@ -74,38 +74,22 @@
     <h1>Purchases</h1>
     <p class="sub">SUI purchases and sales, with cumulative holdings and weighted averages.</p>
 
-    <!-- HIGH-LEVEL SUMMARY -->
+    <!-- TOP SUMMARY -->
     <div id="holdings-summary" class="summary-panel"></div>
 
-    <!-- PURCHASES TABLE -->
     <div class="table-wrap">
       <table id="purchases">
         <thead>
           <tr>
             <th>Count</th>
             <th>Reported</th>
-            <th>SUI Acquired</th>
+            <th>SUI Change</th>
             <th>Avg SUI Cost (GBP)</th>
-            <th>Acq Cost (£)</th>
-            <th>SUI Holdings (at date)</th>
+            <th>Cost Change (£)</th>
+            <th>SUI Holdings</th>
           </tr>
         </thead>
         <tbody><!-- summary + rows injected by JS --></tbody>
-      </table>
-    </div>
-
-    <!-- SALES TABLE -->
-    <div class="table-wrap">
-      <table id="sales">
-        <thead>
-          <tr>
-            <th>Count</th>
-            <th>Reported</th>
-            <th>SUI Sold</th>
-            <th>GBP Proceeds (£)</th>
-          </tr>
-        </thead>
-        <tbody><!-- sales rows injected by JS --></tbody>
       </table>
     </div>
   </div>
@@ -132,110 +116,136 @@
       ["2025-10-07",752.561, 1992.99],
     ];
 
-    // SALES: ["YYYY-MM-DD", SUI_SOLD, GBP_NET_RECEIVED]
-    // SUI_SOLD is set so that: sum(LOTS SUI) - SUI_SOLD = 8,674.96 (your Coinpass balance)
+    // SINGLE SALE: ["YYYY-MM-DD", SUI_SOLD, GBP_NET_RECEIVED]
+    // Fee is ignored in this dashboard.
     const SALES = [
-      ["2025-11-21", 76.296, 79.34],   // derived from 8,751.256 - 8,674.96
+      ["2025-02-07", 76.35, 79.34]
     ];
+
+    const tbody      = document.querySelector("#purchases tbody");
+    const summaryBox = document.querySelector("#holdings-summary");
+    if (!tbody || !summaryBox) return;
 
     const nf0 = new Intl.NumberFormat("en-GB",{maximumFractionDigits:0});
     const nf2 = new Intl.NumberFormat("en-GB",{minimumFractionDigits:2,maximumFractionDigits:2});
 
-    // ---------- PURCHASE SUMMARY & TABLE ----------
-    const purchasesBody = document.querySelector("#purchases tbody");
-    const salesBody     = document.querySelector("#sales tbody");
-    const summaryBox    = document.querySelector("#holdings-summary");
-    if (!purchasesBody || !salesBody || !summaryBox) return;
-
-    const chronological = LOTS.slice().sort(
+    // ---- PURCHASES: total SUI & total cost ----
+    const purchasesChrono = LOTS.slice().sort(
       (a,b)=> new Date(a[0]) - new Date(b[0])
     );
 
-    let holdings = 0;
-    let totalSui = 0;
-    let totalCost = 0;
-    const computed = [];
+    let totalSuiPurchased = 0;
+    let totalCostPurchased = 0;
 
-    chronological.forEach(([dateStr, suiAmount, acqCost])=>{
-      const avgCost = suiAmount > 0 ? acqCost / suiAmount : 0;
-      holdings  += suiAmount;
-      totalSui  += suiAmount;
-      totalCost += acqCost;
-      computed.push({ date:dateStr, suiAmount, acqCost, avgCost, holdings });
+    purchasesChrono.forEach(([dateStr, suiAmount, acqCost])=>{
+      totalSuiPurchased  += suiAmount;
+      totalCostPurchased += acqCost;
     });
 
-    const weightedAvg = totalSui > 0 ? totalCost / totalSui : 0;
+    const avgCost = totalSuiPurchased > 0
+      ? totalCostPurchased / totalSuiPurchased
+      : 0;
 
-    // purchases table rows (latest first)
-    const rows = computed.slice().reverse();
-
-    const summaryRowHtml = `
-      <tr class="summary-row">
-        <td>—</td>
-        <td>Total purchases</td>
-        <td class="num">${nf2.format(totalSui)}</td>
-        <td class="num">£${nf2.format(weightedAvg)}</td>
-        <td class="num">£${nf2.format(totalCost)}</td>
-        <td class="num">${nf0.format(holdings)}</td>
-      </tr>
-    `;
-
-    const detailRowsHtml = rows.map((r,i)=>{
-      const count = rows.length - i;
-      const reported = new Date(r.date).toLocaleDateString("en-GB",{dateStyle:"medium"});
-      return `<tr>
-        <td>${count}</td>
-        <td>${reported}</td>
-        <td class="num">${nf2.format(r.suiAmount)}</td>
-        <td class="num">£${nf2.format(r.avgCost)}</td>
-        <td class="num">£${nf2.format(r.acqCost)}</td>
-        <td class="num">${nf0.format(r.holdings)}</td>
-      </tr>`;
-    }).join("");
-
-    purchasesBody.innerHTML = summaryRowHtml + detailRowsHtml;
-
-    // ---------- SALES LEDGER ----------
+    // ---- SALES: total sold SUI & proceeds (for info only) ----
     const salesChrono = SALES.slice().sort(
       (a,b)=> new Date(a[0]) - new Date(b[0])
     );
-    const salesRows = salesChrono.slice().reverse();
-    const totalSoldSui = salesChrono.reduce((sum,[,sui])=> sum + sui, 0);
-    const totalProceeds = salesChrono.reduce((sum,[,,gbp])=> sum + gbp, 0);
 
-    const salesDetailHtml = salesRows.map((s,i)=>{
-      const [dateStr, suiSold, gbp] = s;
-      const count = salesRows.length - i;
-      const reported = new Date(dateStr).toLocaleDateString("en-GB",{dateStyle:"medium"});
-      return `<tr>
-        <td>${count}</td>
-        <td>${reported}</td>
-        <td class="num">${nf2.format(suiSold)}</td>
-        <td class="num">£${nf2.format(gbp)}</td>
-      </tr>`;
-    }).join("");
+    let totalSoldSui  = 0;
+    let totalProceeds = 0;
 
-    const salesSummaryHtml = `
+    salesChrono.forEach(([dateStr, soldSui, proceeds])=>{
+      totalSoldSui  += soldSui;
+      totalProceeds += proceeds;
+    });
+
+    // Cost basis removed by sale (Section 104 style)
+    const totalCostBasisSold = totalSoldSui * avgCost;
+
+    // Remaining holdings & cost pool
+    const netHoldings   = totalSuiPurchased - totalSoldSui;
+    const remainingCost = totalCostPurchased - totalCostBasisSold;
+    const postSaleAvg   = netHoldings > 0 ? remainingCost / netHoldings : 0;
+
+    // ---------- BUILD LEDGER (purchases + sale) ----------
+    // Each entry: {date, suiDelta, costDelta, avgForRow, isSale}
+    const ledger = [];
+
+    purchasesChrono.forEach(([dateStr, suiAmount, acqCost])=>{
+      ledger.push({
+        date: dateStr,
+        suiDelta: suiAmount,
+        costDelta: acqCost,
+        avgForRow: suiAmount > 0 ? acqCost / suiAmount : 0,
+        isSale: false
+      });
+    });
+
+    // Add sale as a negative row (costDelta is *cost basis removed*)
+    salesChrono.forEach(([dateStr, soldSui, proceeds])=>{
+      const costBasis = soldSui * avgCost; // using global avg cost
+      ledger.push({
+        date: dateStr,
+        suiDelta: -soldSui,
+        costDelta: -costBasis,
+        avgForRow: avgCost,  // average cost per SUI at time of sale
+        isSale: true
+      });
+    });
+
+    // Sort full ledger by date ascending, then display latest first
+    ledger.sort((a,b)=> new Date(a.date) - new Date(b.date));
+
+    // Compute cumulative holdings per row
+    let runningHoldings = 0;
+    const ledgerWithHoldings = ledger.map(entry=>{
+      runningHoldings += entry.suiDelta;
+      return {
+        ...entry,
+        holdingsAfter: runningHoldings
+      };
+    });
+
+    // For display: latest first
+    const rowsForDisplay = ledgerWithHoldings.slice().reverse();
+
+    // ---------- SUMMARY ROW AT TOP OF TABLE ----------
+    const summaryRow = `
       <tr class="summary-row">
         <td>—</td>
-        <td>Total sales</td>
-        <td class="num">${nf2.format(totalSoldSui)}</td>
-        <td class="num">£${nf2.format(totalProceeds)}</td>
+        <td>Net after sales</td>
+        <td class="num">${nf2.format(netHoldings)}</td>
+        <td class="num">£${nf2.format(postSaleAvg)}</td>
+        <td class="num">£${nf2.format(remainingCost)}</td>
+        <td class="num">${nf0.format(netHoldings)}</td>
       </tr>
     `;
 
-    salesBody.innerHTML = salesSummaryHtml + salesDetailHtml;
+    // ---------- DETAIL ROWS ----------
+    const detailRows = rowsForDisplay.map((r, i)=>{
+      const count = rowsForDisplay.length - i;
+      const reported = new Date(r.date).toLocaleDateString("en-GB",{dateStyle:"medium"});
+      const suiChange = r.isSale ? -Math.abs(r.suiDelta) : r.suiDelta;
+      const costChange = r.costDelta;
+      return `<tr>
+        <td>${count}</td>
+        <td>${reported}${r.isSale ? " (Sale)" : ""}</td>
+        <td class="num">${nf2.format(suiChange)}</td>
+        <td class="num">£${nf2.format(r.avgForRow)}</td>
+        <td class="num">£${nf2.format(costChange)}</td>
+        <td class="num">${nf2.format(r.holdingsAfter)}</td>
+      </tr>`;
+    }).join("");
+
+    tbody.innerHTML = summaryRow + detailRows;
 
     // ---------- TOP SUMMARY PANEL ----------
-    const netHoldings = totalSui - totalSoldSui;  // should be 8,674.96
-    const currentCostPool = weightedAvg * netHoldings; // Section 104 style, same avg
-
     summaryBox.innerHTML = `
-      <span><strong>Total SUI purchased:</strong> ${nf2.format(totalSui)}</span>
+      <span><strong>Total SUI purchased:</strong> ${nf2.format(totalSuiPurchased)}</span>
       <span><strong>Total SUI sold:</strong> ${nf2.format(totalSoldSui)}</span>
       <span><strong>Current SUI holdings:</strong> ${nf2.format(netHoldings)}</span>
-      <span><strong>Weighted avg cost / SUI:</strong> £${nf2.format(weightedAvg)}</span>
-      <span><strong>Cost pool (current):</strong> £${nf2.format(currentCostPool)}</span>
+      <span><strong>Weighted avg cost / SUI:</strong> £${nf2.format(postSaleAvg)}</span>
+      <span><strong>Current cost pool:</strong> £${nf2.format(remainingCost)}</span>
     `;
 
   })();
