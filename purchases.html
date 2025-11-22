@@ -55,12 +55,14 @@
   <!-- Shared header mount -->
   <div id="site-header"></div>
   <script>
-    fetch('header.html').then(r=>r.text()).then(h=>{document.getElementById('site-header').innerHTML=h});
+    fetch('header.html')
+      .then(r=>r.text())
+      .then(h=>{document.getElementById('site-header').innerHTML=h});
   </script>
 
   <div class="container">
     <h1>Purchases</h1>
-    <p class="sub">All SUI purchases in GBP, with weighted averages and cumulative holdings.</p>
+    <p class="sub">All SUI purchases in GBP, with weighted averages, cumulative holdings, and sales-adjusted figures.</p>
 
     <div class="table-wrap">
       <table id="purchases">
@@ -81,7 +83,8 @@
 
   <script>
   (function(){
-    // EDIT HERE: ["YYYY-MM-DD", SUI_AMOUNT, GBP_TOTAL]
+
+    // PURCHASES: ["YYYY-MM-DD", SUI_AMOUNT, GBP_TOTAL]
     const LOTS = [
       ["2025-11-07", 630.39, 996.49],
       ["2025-11-06", 166.30, 249.12],
@@ -90,43 +93,103 @@
       ["2025-10-30", 292.38, 498.24],
       ["2025-10-25", 2.60, 4.96],
       ["2025-10-22", 823.85, 1500.05],
-      ["2025-10-21",   1.05,    2.03],
-      ["2025-10-20",1290.56, 2536.55],
-      ["2025-10-16",1914.93, 3881.38],
-      ["2025-10-11",  73.27,  140.50],
+      ["2025-10-21", 1.05, 2.03],
+      ["2025-10-20", 1290.56, 2536.55],
+      ["2025-10-16", 1914.93, 3881.38],
+      ["2025-10-11", 73.27, 140.50],
       ["2025-10-21", 310.925, 584.99],
-      ["2025-10-09", 221.61,  514.77],
-      ["2025-10-08", 253.76,  676.03],
-      ["2025-10-07", 752.561,1992.99],
+      ["2025-10-09", 221.61, 514.77],
+      ["2025-10-08", 253.76, 676.03],
+      ["2025-10-07", 752.561, 1992.99],
     ];
 
-    const tbody = document.querySelector("#purchases tbody"); if(!tbody) return;
+    // SALES: ["YYYY-MM-DD", SUI_SOLD, GBP_NET_RECEIVED]
+    // (no fees tracked in this dashboard)
+    const SALES = [
+      ["2025-02-07", 76.35, 79.34],
+    ];
+
+    const tbody = document.querySelector("#purchases tbody");
+    if (!tbody) return;
+
     const nf0 = new Intl.NumberFormat("en-GB",{maximumFractionDigits:0});
     const nf2 = new Intl.NumberFormat("en-GB",{minimumFractionDigits:2,maximumFractionDigits:2});
 
-    const chronological = LOTS.slice().sort((a,b)=> new Date(a[0]) - new Date(b[0]));
-    let holdings = 0, totalSui = 0, totalCost = 0;
-    const computed = [];
-    chronological.forEach(([dateStr, suiAmount, acqCost])=>{
-      const avgCost = suiAmount > 0 ? acqCost / suiAmount : 0;
-      holdings += suiAmount; totalSui += suiAmount; totalCost += acqCost;
-      computed.push({ date:dateStr, suiAmount, acqCost, avgCost, holdings });
+    // ---- PURCHASE CALCULATIONS ----
+    const chronological = LOTS.slice().sort(
+      (a,b)=> new Date(a[0]) - new Date(b[0])
+    );
+
+    let totalSui = 0;
+    let totalCost = 0;
+
+    chronological.forEach(([dateStr, suiAmount, acqCost]) => {
+      totalSui  += suiAmount;
+      totalCost += acqCost;
     });
-    const rows = computed.slice().reverse();
-    const weightedAvg = totalSui > 0 ? totalCost / totalSui : 0;
+
+    const avgCost = totalSui > 0 ? totalCost / totalSui : 0;
+
+    // ---- APPLY SALES (no fees) ----
+    let totalSoldSui  = 0;
+    let totalProceeds = 0;
+
+    SALES.forEach(([dateStr, soldAmt, proceeds]) => {
+      totalSoldSui  += soldAmt;
+      totalProceeds += proceeds;
+    });
+
+    // Cost basis removed due to sales (Section 104-style pool)
+    const costBasisSold    = totalSoldSui * avgCost;
+
+    // Remaining SUI & remaining cost pool
+    const remainingSui      = totalSui - totalSoldSui;
+    const remainingCostPool = totalCost - costBasisSold;
+
+    // Realised P&L ignoring fees (proceeds - cost basis)
+    const realisedPnL = totalProceeds - costBasisSold;
+
+    // ---- DETAIL ROWS (purchases) ----
+    let holdings = 0;
+    const computed = chronological.map(([dateStr, suiAmount, acqCost]) => {
+      holdings += suiAmount;
+      return {
+        date: dateStr,
+        suiAmount,
+        acqCost,
+        avgCost: acqCost / suiAmount,
+        holdings
+      };
+    }).reverse();
+
+    // ---- SUMMARY ROWS (top of table) ----
+    const remainingAvgCost = remainingSui > 0
+      ? remainingCostPool / remainingSui
+      : 0;
 
     const summary = `
       <tr class="summary-row">
-        <td>—</td><td></td>
-        <td class="num">${nf2.format(totalSui)}</td>
-        <td class="num">£${nf2.format(weightedAvg)}</td>
-        <td class="num">£${nf2.format(totalCost)}</td>
-        <td class="num">${nf0.format(holdings)}</td>
+        <td>—</td><td>Post-Sale</td>
+        <td class="num">${nf2.format(remainingSui)}</td>
+        <td class="num">£${nf2.format(remainingAvgCost)}</td>
+        <td class="num">£${nf2.format(remainingCostPool)}</td>
+        <td class="num">${nf0.format(remainingSui)}</td>
+      </tr>
+      <tr class="summary-row">
+        <td>—</td><td>Realised P&L</td>
+        <td class="num">-${nf2.format(totalSoldSui)}</td>
+        <td></td>
+        <td class="num">£${nf2.format(realisedPnL)}</td>
+        <td></td>
       </tr>
     `;
-    const detail = rows.map((r,i)=>{
-      const count = rows.length - i;
-      const reported = new Date(r.date).toLocaleDateString("en-GB",{dateStyle:"medium"});
+
+    const detail = computed.map((r,i)=>{
+      const count = computed.length - i;
+      const reported = new Date(r.date).toLocaleDateString(
+        "en-GB",
+        {dateStyle:"medium"}
+      );
       return `<tr>
         <td>${count}</td>
         <td>${reported}</td>
@@ -138,16 +201,18 @@
     }).join("");
 
     tbody.innerHTML = summary + detail;
+
   })();
   </script>
+
   <div id="site-footer"></div>
-<script>
-  // Use a root-relative path if your site is under /kah1/
-  fetch('/kah1/footer.html')     // <- if your project is kaplankopy-debug.github.io/kah1
-  // fetch('footer.html')        // <- use this if your Pages root is the repo root
-    .then(r => r.text())
-    .then(html => { document.getElementById('site-footer').innerHTML = html; })
-    .catch(console.error);
-</script>
+  <script>
+    // Use a root-relative path if your site is under /kah1/
+    fetch('/kah1/footer.html')
+      // fetch('footer.html')        // <- use this if your Pages root is the repo root
+      .then(r => r.text())
+      .then(html => { document.getElementById('site-footer').innerHTML = html; })
+      .catch(console.error);
+  </script>
 </body>
 </html>
