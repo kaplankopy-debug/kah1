@@ -11,17 +11,13 @@
   <style>
     :root{
       --bg:#0c0e11; --text:#b8dfff; --muted:#8ba0b8; --sui-blue:#00baff;
-      --divider:#1d2733; --topbar-bg:#11161b; --topbar-text:#e9f8ff;
-      --nav-pill:#141b21; --nav-pill-active:#1f2a33; --glow-strength:.45;
-      --banner-bg:linear-gradient(90deg,#001b29 0%,#004a68 50%,#00baff 100%);
-      --banner-text:#d7f6ff; --banner-text-hover:#ffffff;
-      --table-bg:#0f151b; --thead-bg:#131b23; --row-alt:#0d141a;
+      --divider:#1d2733; --table-bg:#0f151b; --thead-bg:#131b23; --row-alt:#0d141a;
     }
     *{box-sizing:border-box;margin:0;padding:0}
     body{
       background:var(--bg); color:var(--text);
       font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; overflow-x:hidden; position:relative;
+      -webkit-font-smoothing:antialiased; overflow-x:hidden; position:relative;
     }
     body::before{
       content:""; position:fixed; top:-180px; right:-180px; width:600px; height:600px; pointer-events:none;
@@ -67,7 +63,9 @@
   <!-- Shared header mount -->
   <div id="site-header"></div>
   <script>
-    fetch('header.html').then(r=>r.text()).then(h=>{document.getElementById('site-header').innerHTML=h});
+    fetch('header.html')
+      .then(r=>r.text())
+      .then(h=>{document.getElementById('site-header').innerHTML=h});
   </script>
 
   <div class="container">
@@ -89,7 +87,7 @@
             <th>SUI Holdings</th>
           </tr>
         </thead>
-        <tbody><!-- summary + rows injected by JS --></tbody>
+        <tbody><!-- rows injected by JS --></tbody>
       </table>
     </div>
   </div>
@@ -116,10 +114,10 @@
       ["2025-10-07",752.561, 1992.99],
     ];
 
-    // SINGLE SALE: ["YYYY-MM-DD", SUI_SOLD, GBP_NET_RECEIVED]
-    // Fee is ignored in this dashboard.
+    // SALE: ["YYYY-MM-DD", SUI_SOLD, GBP_COST_BASIS_REMOVED]
+    // Cost basis here is set to match Xero: £147.17 removed, leaving £16,715.21.
     const SALES = [
-      ["2025-02-07", 76.35, 79.34]
+      ["2025-11-21", 76.35, 147.17]
     ];
 
     const tbody      = document.querySelector("#purchases tbody");
@@ -129,46 +127,42 @@
     const nf0 = new Intl.NumberFormat("en-GB",{maximumFractionDigits:0});
     const nf2 = new Intl.NumberFormat("en-GB",{minimumFractionDigits:2,maximumFractionDigits:2});
 
-    // ---- PURCHASES: total SUI & total cost ----
+    // ----- PURCHASE TOTALS -----
     const purchasesChrono = LOTS.slice().sort(
       (a,b)=> new Date(a[0]) - new Date(b[0])
     );
 
-    let totalSuiPurchased = 0;
+    let totalSuiPurchased  = 0;
     let totalCostPurchased = 0;
 
-    purchasesChrono.forEach(([dateStr, suiAmount, acqCost])=>{
-      totalSuiPurchased  += suiAmount;
-      totalCostPurchased += acqCost;
+    purchasesChrono.forEach(([d, sui, cost])=>{
+      totalSuiPurchased  += sui;
+      totalCostPurchased += cost;
     });
 
-    const avgCost = totalSuiPurchased > 0
+    const preSaleAvg = totalSuiPurchased > 0
       ? totalCostPurchased / totalSuiPurchased
       : 0;
 
-    // ---- SALES: total sold SUI & proceeds (for info only) ----
+    // ----- SALES TOTALS -----
     const salesChrono = SALES.slice().sort(
       (a,b)=> new Date(a[0]) - new Date(b[0])
     );
 
-    let totalSoldSui  = 0;
-    let totalProceeds = 0;
+    let totalSoldSui         = 0;
+    let totalCostBasisSold   = 0;
 
-    salesChrono.forEach(([dateStr, soldSui, proceeds])=>{
-      totalSoldSui  += soldSui;
-      totalProceeds += proceeds;
+    salesChrono.forEach(([d, suiSold, costBasis])=>{
+      totalSoldSui       += suiSold;
+      totalCostBasisSold += costBasis;
     });
 
-    // Cost basis removed by sale (Section 104 style)
-    const totalCostBasisSold = totalSoldSui * avgCost;
-
-    // Remaining holdings & cost pool
+    // Remaining holdings & cost pool (this matches Xero: 16,715.21)
     const netHoldings   = totalSuiPurchased - totalSoldSui;
     const remainingCost = totalCostPurchased - totalCostBasisSold;
     const postSaleAvg   = netHoldings > 0 ? remainingCost / netHoldings : 0;
 
-    // ---------- BUILD LEDGER (purchases + sale) ----------
-    // Each entry: {date, suiDelta, costDelta, avgForRow, isSale}
+    // ----- BUILD LEDGER (purchases + sale) -----
     const ledger = [];
 
     purchasesChrono.forEach(([dateStr, suiAmount, acqCost])=>{
@@ -181,39 +175,32 @@
       });
     });
 
-    // Add sale as a negative row (costDelta is *cost basis removed*)
-    salesChrono.forEach(([dateStr, soldSui, proceeds])=>{
-      const costBasis = soldSui * avgCost; // using global avg cost
+    salesChrono.forEach(([dateStr, suiSold, costBasis])=>{
       ledger.push({
         date: dateStr,
-        suiDelta: -soldSui,
+        suiDelta: -suiSold,
         costDelta: -costBasis,
-        avgForRow: avgCost,  // average cost per SUI at time of sale
+        avgForRow: suiSold > 0 ? costBasis / suiSold : 0, // 147.17 / 76.35
         isSale: true
       });
     });
 
-    // Sort full ledger by date ascending, then display latest first
+    // sort by date ascending, then show newest first
     ledger.sort((a,b)=> new Date(a.date) - new Date(b.date));
 
-    // Compute cumulative holdings per row
     let runningHoldings = 0;
     const ledgerWithHoldings = ledger.map(entry=>{
       runningHoldings += entry.suiDelta;
-      return {
-        ...entry,
-        holdingsAfter: runningHoldings
-      };
+      return { ...entry, holdingsAfter: runningHoldings };
     });
 
-    // For display: latest first
     const rowsForDisplay = ledgerWithHoldings.slice().reverse();
 
-    // ---------- SUMMARY ROW AT TOP OF TABLE ----------
+    // ----- SUMMARY ROW -----
     const summaryRow = `
       <tr class="summary-row">
         <td>—</td>
-        <td>Net after sales</td>
+        <td>Net after sale</td>
         <td class="num">${nf2.format(netHoldings)}</td>
         <td class="num">£${nf2.format(postSaleAvg)}</td>
         <td class="num">£${nf2.format(remainingCost)}</td>
@@ -221,11 +208,11 @@
       </tr>
     `;
 
-    // ---------- DETAIL ROWS ----------
-    const detailRows = rowsForDisplay.map((r, i)=>{
+    // ----- DETAIL ROWS -----
+    const detailRows = rowsForDisplay.map((r,i)=>{
       const count = rowsForDisplay.length - i;
       const reported = new Date(r.date).toLocaleDateString("en-GB",{dateStyle:"medium"});
-      const suiChange = r.isSale ? -Math.abs(r.suiDelta) : r.suiDelta;
+      const suiChange = r.suiDelta;
       const costChange = r.costDelta;
       return `<tr>
         <td>${count}</td>
@@ -239,13 +226,13 @@
 
     tbody.innerHTML = summaryRow + detailRows;
 
-    // ---------- TOP SUMMARY PANEL ----------
+    // ----- TOP SUMMARY PANEL -----
     summaryBox.innerHTML = `
       <span><strong>Total SUI purchased:</strong> ${nf2.format(totalSuiPurchased)}</span>
       <span><strong>Total SUI sold:</strong> ${nf2.format(totalSoldSui)}</span>
       <span><strong>Current SUI holdings:</strong> ${nf2.format(netHoldings)}</span>
       <span><strong>Weighted avg cost / SUI:</strong> £${nf2.format(postSaleAvg)}</span>
-      <span><strong>Current cost pool:</strong> £${nf2.format(remainingCost)}</span>
+      <span><strong>Current SUI cost pool (Xero):</strong> £${nf2.format(remainingCost)}</span>
     `;
 
   })();
